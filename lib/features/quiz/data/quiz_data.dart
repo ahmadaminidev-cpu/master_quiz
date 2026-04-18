@@ -1,3 +1,4 @@
+import '../models/exam_question.dart';
 import '../models/quiz_question.dart';
 
 class QuizData {
@@ -37,6 +38,83 @@ class QuizData {
     final dayOfYear = DateTime.now().difference(DateTime(DateTime.now().year, 1, 1)).inDays;
     return _dailyPool[dayOfYear % _dailyPool.length];
   }
+
+  // ── Exam Mode ──────────────────────────────────────────────────────────────
+
+  static const List<ExamQuestion> examQuestions = [
+    ExamQuestion(
+      question: 'What does the "S" in SOLID principles stand for?',
+      options: ['Scalable', 'Single Responsibility', 'Structured', 'Stateless'],
+      correctIndex: 1,
+      explanation: 'Single Responsibility Principle (SRP) states that a class should have only one reason to change — meaning it should have only one job or responsibility.',
+    ),
+    ExamQuestion(
+      question: 'Which data structure uses LIFO (Last In, First Out)?',
+      options: ['Queue', 'Linked List', 'Stack', 'Tree'],
+      correctIndex: 2,
+      explanation: 'A Stack follows LIFO — the last element pushed is the first to be popped. Common uses include undo operations, call stacks, and expression parsing.',
+    ),
+    ExamQuestion(
+      question: 'What is the time complexity of binary search?',
+      options: ['O(n)', 'O(n²)', 'O(log n)', 'O(1)'],
+      correctIndex: 2,
+      explanation: 'Binary search halves the search space on each step, giving O(log n) time complexity. It requires the input array to be sorted.',
+    ),
+    ExamQuestion(
+      question: 'In REST APIs, which HTTP method is idempotent but NOT safe?',
+      options: ['GET', 'POST', 'PUT', 'DELETE'],
+      correctIndex: 2,
+      explanation: 'PUT is idempotent (calling it multiple times has the same effect) but not safe because it modifies server state. GET is both safe and idempotent. POST is neither.',
+    ),
+    ExamQuestion(
+      question: 'What does "immutable" mean in programming?',
+      options: ['Can be changed at runtime', 'Cannot be modified after creation', 'Stored in heap memory', 'Compiled at build time'],
+      correctIndex: 1,
+      explanation: 'An immutable object cannot be changed after it is created. Immutability helps prevent bugs, makes code easier to reason about, and is a core concept in functional programming.',
+    ),
+    ExamQuestion(
+      question: 'Which SQL clause is used to filter groups after aggregation?',
+      options: ['WHERE', 'FILTER', 'HAVING', 'GROUP BY'],
+      correctIndex: 2,
+      explanation: 'HAVING filters rows after GROUP BY aggregation. WHERE filters rows before aggregation. Example: SELECT dept, COUNT(*) FROM employees GROUP BY dept HAVING COUNT(*) > 5.',
+    ),
+    ExamQuestion(
+      question: 'What is a "race condition" in concurrent programming?',
+      options: ['A performance benchmark', 'Two threads competing for CPU time', 'A bug where output depends on unpredictable thread timing', 'A deadlock between two processes'],
+      correctIndex: 2,
+      explanation: 'A race condition occurs when two or more threads access shared data simultaneously and the result depends on the order of execution. It leads to unpredictable bugs that are hard to reproduce.',
+    ),
+    ExamQuestion(
+      question: 'What does "dependency injection" primarily achieve?',
+      options: ['Faster code execution', 'Loose coupling between components', 'Automatic memory management', 'Reduced bundle size'],
+      correctIndex: 1,
+      explanation: 'Dependency Injection (DI) decouples components by providing dependencies from outside rather than creating them internally. This makes code more testable, maintainable, and flexible.',
+    ),
+    ExamQuestion(
+      question: 'Which Git command creates a new branch and switches to it?',
+      options: ['git branch new-branch', 'git switch new-branch', 'git checkout -b new-branch', 'git create new-branch'],
+      correctIndex: 2,
+      explanation: '"git checkout -b <name>" creates a new branch and immediately switches to it. The modern equivalent is "git switch -c <name>". Both are widely used in professional workflows.',
+    ),
+    ExamQuestion(
+      question: 'What is the purpose of an index in a database?',
+      options: ['To encrypt data', 'To speed up data retrieval', 'To enforce foreign keys', 'To compress table storage'],
+      correctIndex: 1,
+      explanation: 'A database index is a data structure that improves the speed of data retrieval. It works like a book index — instead of scanning every row, the DB jumps directly to the relevant data.',
+    ),
+    ExamQuestion(
+      question: 'In OOP, what is "polymorphism"?',
+      options: ['Hiding internal implementation details', 'A class inheriting from multiple parents', 'The ability of different objects to respond to the same interface', 'Storing multiple data types in one variable'],
+      correctIndex: 2,
+      explanation: 'Polymorphism allows objects of different types to be treated through a common interface. For example, a "draw()" method can behave differently for Circle, Square, and Triangle objects.',
+    ),
+    ExamQuestion(
+      question: 'What does "CI/CD" stand for?',
+      options: ['Code Integration / Code Deployment', 'Continuous Integration / Continuous Delivery', 'Compiled Interface / Compiled Distribution', 'Central Index / Central Database'],
+      correctIndex: 1,
+      explanation: 'CI/CD stands for Continuous Integration and Continuous Delivery (or Deployment). CI automates building and testing code on every commit. CD automates releasing that code to production.',
+    ),
+  ];
 
   // ── Fast Mode ──────────────────────────────────────────────────────────────
 

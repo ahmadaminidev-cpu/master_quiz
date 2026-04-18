@@ -6,10 +6,12 @@ import '../../../daily_challenge/presentation/bloc/daily_challenge_bloc.dart';
 import '../../../quiz/data/quiz_data.dart';
 import '../../../quiz/models/quiz_mode.dart';
 import '../../../quiz/presentation/bloc/quiz_bloc.dart';
+import '../../../quiz/presentation/bloc/exam_bloc.dart';
 import '../../../quiz/presentation/bloc/power_up_bloc.dart';
 import '../../../quiz/presentation/bloc/time_attack_bloc.dart';
 import '../../../quiz/presentation/pages/fast_mode_screen.dart';
 import '../../../quiz/presentation/pages/quiz_screen.dart';
+import '../../../quiz/presentation/pages/exam_screen.dart';
 import '../../../quiz/presentation/pages/power_up_screen.dart';
 import '../../../quiz/presentation/pages/time_attack_screen.dart';
 import '../bloc/home_bloc.dart';
@@ -426,12 +428,24 @@ class HomeScreen extends StatelessWidget {
                           );
                         },
                       ),
-                      const GameModeCard(
+                      GameModeCard(
                         title: 'Exam Mode',
-                        subtitle: '50 Qs • Pro',
-                        imagePath: "assets/logo/exam_mode.png",
+                        subtitle: '12 Qs • 15s each',
                         icon: Icons.menu_book_rounded,
+                        imagePath: "assets/logo/exam_mode.png",
                         color: AppColors.accentOrange,
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => BlocProvider(
+                                create: (_) => ExamBloc(
+                                  questions: QuizData.examQuestions,
+                                )..add(StartExam()),
+                                child: const ExamScreen(),
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ],
                   );
