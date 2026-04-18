@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/auth/google_sign_in_service.dart';
 import '../../../../core/locale/app_localizations.dart';
 import '../../../../core/locale/language_picker.dart';
 import '../../../../core/theme/app_theme.dart';
@@ -45,6 +46,7 @@ class ProgressScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(15)),
                       onSelected: (value) {
                         if (value == 'language') showLanguagePicker(context);
+                        if (value == 'save_progress') signInWithGoogle(context);
                       },
                       itemBuilder: (ctx) => [
                         PopupMenuItem<String>(

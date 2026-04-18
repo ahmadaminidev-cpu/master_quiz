@@ -12,7 +12,20 @@
           "package_name": "com.ahmad.quizora"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "450989478145-rklvve4b38sf7shrcolfmdt1i28cdsjq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ahmad.quizora",
+            "certificate_hash": "e0d6e2917a07a0094adb223b51d676ca64ace235"
+          }
+        },
+        {
+          "client_id": "450989478145-ck22o3oj0qi12tjmfjhrds38vi3e6lko.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCL9f-0YTh39yHAdYHDcpjfZcgJCL7CQbc"
@@ -20,26 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:450989478145:android:961bb7ade640e04faa8b00",
-        "android_client_info": {
-          "package_name": "com.example.quiz_app"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCL9f-0YTh39yHAdYHDcpjfZcgJCL7CQbc"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "450989478145-ck22o3oj0qi12tjmfjhrds38vi3e6lko.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "450989478145-04qeucu93k67vevfl9o164nigrogm2to.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.quizApp"
+              }
+            }
+          ]
         }
       }
     }
