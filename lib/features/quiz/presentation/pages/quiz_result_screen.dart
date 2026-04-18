@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../bloc/quiz_bloc.dart';
 import '../../data/quiz_data.dart';
+import '../../models/quiz_mode.dart';
+import 'fast_mode_screen.dart';
 import 'quiz_screen.dart';
 
 class QuizResultScreen extends StatelessWidget {
@@ -10,6 +12,7 @@ class QuizResultScreen extends StatelessWidget {
   final IconData categoryIcon;
   final Color categoryColor;
   final bool isDailyChallenge;
+  final bool isFastMode;
 
   const QuizResultScreen({
     super.key,
@@ -17,6 +20,7 @@ class QuizResultScreen extends StatelessWidget {
     required this.categoryIcon,
     required this.categoryColor,
     this.isDailyChallenge = false,
+    this.isFastMode = false,
   });
 
   @override
@@ -213,7 +217,9 @@ class QuizResultScreen extends StatelessWidget {
 
                       final questions = isDailyChallenge
                           ? QuizData.dailyQuestions
-                          : QuizData.questionsByCategory[category]!;
+                          : isFastMode
+                              ? QuizData.fastModeQuestions
+                              : QuizData.questionsByCategory[category]!;
 
                       return Container(
                         margin: const EdgeInsets.only(bottom: 10),
@@ -223,7 +229,7 @@ class QuizResultScreen extends StatelessWidget {
                           color: AppColors.surface,
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
-                              color: dotColor.withOpacity(0.2)),
+                              color: dotColor.withValues(alpha: 0.2)),
                         ),
                         child: Row(
                           children: [
@@ -262,23 +268,39 @@ class QuizResultScreen extends StatelessWidget {
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                builder: (_) => BlocProvider(
-                                  create: (_) => QuizBloc()
-                                    ..add(StartQuiz(
-                                      category: category,
-                                      questions: QuizData
-                                          .questionsByCategory[category]!,
-                                    )),
-                                  child: QuizScreen(
-                                    category: category,
-                                    categoryIcon: categoryIcon,
-                                    categoryColor: categoryColor,
+                            if (isFastMode) {
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (_) => BlocProvider(
+                                    create: (_) => QuizBloc()
+                                      ..add(StartQuiz(
+                                        category: 'Fast Mode',
+                                        questions: QuizData.fastModeQuestions,
+                                        mode: QuizMode.fast,
+                                      )),
+                                    child: const FastModeScreen(),
                                   ),
                                 ),
-                              ),
-                            );
+                              );
+                            } else {
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (_) => BlocProvider(
+                                    create: (_) => QuizBloc()
+                                      ..add(StartQuiz(
+                                        category: category,
+                                        questions: QuizData
+                                            .questionsByCategory[category]!,
+                                      )),
+                                    child: QuizScreen(
+                                      category: category,
+                                      categoryIcon: categoryIcon,
+                                      categoryColor: categoryColor,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.primary,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../daily_challenge/presentation/bloc/daily_challenge_bloc.dart';
+import '../../models/quiz_mode.dart';
 import '../bloc/quiz_bloc.dart';
 import '../widgets/answer_option.dart';
 import '../widgets/quiz_lifeline_button.dart';
@@ -177,7 +178,7 @@ class QuizScreen extends StatelessWidget {
                           // ── Timer Bar ────────────────────────────────────
                           _TimerBar(
                             timeRemaining: state.timeRemaining,
-                            totalTime: QuizBloc.questionDuration,
+                            totalTime: state.mode.questionDuration,
                           ),
 
                           const SizedBox(height: 20),

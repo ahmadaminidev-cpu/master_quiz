@@ -4,7 +4,9 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/app_loading.dart';
 import '../../../daily_challenge/presentation/bloc/daily_challenge_bloc.dart';
 import '../../../quiz/data/quiz_data.dart';
+import '../../../quiz/models/quiz_mode.dart';
 import '../../../quiz/presentation/bloc/quiz_bloc.dart';
+import '../../../quiz/presentation/pages/fast_mode_screen.dart';
 import '../../../quiz/presentation/pages/quiz_screen.dart';
 import '../bloc/home_bloc.dart';
 import '../widgets/home_widgets.dart';
@@ -339,26 +341,41 @@ class HomeScreen extends StatelessWidget {
                     mainAxisSpacing: 20,
                     crossAxisSpacing: 20,
                     childAspectRatio: aspectRatio,
-                    children: const [
+                    children: [
                       GameModeCard(
                           title: 'Fast Mode',
-                          subtitle: '15 Qs • 2 mins',
+                          subtitle: '10 Qs • 5s each',
                           icon: Icons.speed_rounded,
                           players: '24.7K',
-                          color: AppColors.primary),
-                      GameModeCard(
+                          color: AppColors.primary,
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => BlocProvider(
+                                  create: (_) => QuizBloc()
+                                    ..add(StartQuiz(
+                                      category: 'Fast Mode',
+                                      questions: QuizData.fastModeQuestions,
+                                      mode: QuizMode.fast,
+                                    )),
+                                  child: const FastModeScreen(),
+                                ),
+                              ),
+                            );
+                          }),
+                      const GameModeCard(
                           title: 'Time Attack',
                           subtitle: 'Infinite • 1 min',
                           icon: Icons.timer_rounded,
                           players: '12.5K',
                           color: AppColors.secondary),
-                      GameModeCard(
+                      const GameModeCard(
                           title: 'Power Up',
                           subtitle: '10 Qs • Hard',
                           icon: Icons.bolt_rounded,
                           players: '18.2K',
                           color: AppColors.accent),
-                      GameModeCard(
+                      const GameModeCard(
                           title: 'Exam Mode',
                           subtitle: '50 Qs • Pro',
                           icon: Icons.menu_book_rounded,

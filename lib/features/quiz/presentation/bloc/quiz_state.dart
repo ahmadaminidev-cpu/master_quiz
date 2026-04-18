@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import '../../models/quiz_question.dart';
+import '../../models/quiz_mode.dart';
 
 abstract class QuizState extends Equatable {
   const QuizState();
@@ -18,6 +19,7 @@ class QuizInProgress extends QuizState {
   final bool answered;
   final int timeRemaining;
   final int score;
+  final QuizMode mode;
 
   /// null = skipped, true = correct, false = wrong
   final List<bool?> answerResults;
@@ -31,6 +33,7 @@ class QuizInProgress extends QuizState {
     required this.answered,
     required this.timeRemaining,
     required this.score,
+    required this.mode,
     required this.answerResults,
     required this.halfAnswersUsed,
   });
@@ -52,6 +55,7 @@ class QuizInProgress extends QuizState {
     return QuizInProgress(
       category: category,
       questions: questions,
+      mode: mode,
       currentIndex: currentIndex ?? this.currentIndex,
       selectedAnswer:
           clearSelectedAnswer ? null : (selectedAnswer ?? this.selectedAnswer),
@@ -72,6 +76,7 @@ class QuizInProgress extends QuizState {
         answered,
         timeRemaining,
         score,
+        mode,
         answerResults,
         halfAnswersUsed,
       ];
@@ -82,14 +87,16 @@ class QuizFinished extends QuizState {
   final int score;
   final int totalQuestions;
   final List<bool?> answerResults;
+  final QuizMode mode;
 
   const QuizFinished({
     required this.category,
     required this.score,
     required this.totalQuestions,
     required this.answerResults,
+    this.mode = QuizMode.standard,
   });
 
   @override
-  List<Object?> get props => [category, score, totalQuestions, answerResults];
+  List<Object?> get props => [category, score, totalQuestions, answerResults, mode];
 }

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../models/quiz_mode.dart';
 import 'quiz_event.dart';
 import 'quiz_state.dart';
 
@@ -7,8 +8,6 @@ export 'quiz_event.dart';
 export 'quiz_state.dart';
 
 class QuizBloc extends Bloc<QuizEvent, QuizState> {
-  static const int questionDuration = 30;
-
   Timer? _timer;
 
   QuizBloc() : super(QuizInitial()) {
@@ -23,7 +22,7 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
 
   // ── Timer ──────────────────────────────────────────────────────────────────
 
-  void _startTimer() {
+  void _startTimer(QuizMode mode) {
     _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       final current = state;
@@ -41,23 +40,26 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
 
   void _onStartQuiz(StartQuiz event, Emitter<QuizState> emit) {
     _timer?.cancel();
+    final duration = event.mode.questionDuration;
     emit(QuizInProgress(
       category: event.category,
       questions: event.questions,
+      mode: event.mode,
       currentIndex: 0,
       selectedAnswer: null,
       answered: false,
-      timeRemaining: questionDuration,
+      timeRemaining: duration,
       score: 0,
       answerResults: List.filled(event.questions.length, null),
       halfAnswersUsed: List.filled(event.questions.length, false),
     ));
-    _startTimer();
+    _startTimer(event.mode);
   }
 
   void _onSelectAnswer(SelectAnswer event, Emitter<QuizState> emit) {
     final current = state;
     if (current is! QuizInProgress || current.answered) return;
+
     _timer?.cancel();
 
     final isCorrect =
@@ -71,6 +73,13 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
       score: isCorrect ? current.score + 10 : current.score,
       answerResults: newResults,
     ));
+
+    // In fast mode, auto-advance after a brief feedback pause.
+    if (current.mode.autoAdvance) {
+      _timer = Timer(const Duration(milliseconds: 1200), () {
+        add(NextQuestion());
+      });
+    }
   }
 
   void _onNextQuestion(NextQuestion event, Emitter<QuizState> emit) {
@@ -84,17 +93,19 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
         score: current.score,
         totalQuestions: current.totalQuestions,
         answerResults: current.answerResults,
+        mode: current.mode,
       ));
       return;
     }
 
+    final duration = current.mode.questionDuration;
     emit(current.copyWith(
       currentIndex: current.currentIndex + 1,
       answered: false,
-      timeRemaining: questionDuration,
+      timeRemaining: duration,
       clearSelectedAnswer: true,
     ));
-    _startTimer();
+    _startTimer(current.mode);
   }
 
   void _onSkipQuestion(SkipQuestion event, Emitter<QuizState> emit) {
@@ -108,24 +119,25 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
         score: current.score,
         totalQuestions: current.totalQuestions,
         answerResults: current.answerResults,
+        mode: current.mode,
       ));
       return;
     }
 
+    final duration = current.mode.questionDuration;
     emit(current.copyWith(
       currentIndex: current.currentIndex + 1,
       answered: false,
-      timeRemaining: questionDuration,
+      timeRemaining: duration,
       clearSelectedAnswer: true,
     ));
-    _startTimer();
+    _startTimer(current.mode);
   }
 
   void _onTimerTick(TimerTick event, Emitter<QuizState> emit) {
     final current = state;
-    if (current is QuizInProgress) {
-      emit(current.copyWith(timeRemaining: event.remaining));
-    }
+    if (current is! QuizInProgress) return;
+    emit(current.copyWith(timeRemaining: event.remaining));
   }
 
   void _onUseHalfAnswers(UseHalfAnswers event, Emitter<QuizState> emit) {

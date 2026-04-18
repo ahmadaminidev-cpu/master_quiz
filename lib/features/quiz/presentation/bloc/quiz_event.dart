@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import '../../models/quiz_question.dart';
+import '../../models/quiz_mode.dart';
 
 abstract class QuizEvent extends Equatable {
   const QuizEvent();
@@ -11,11 +12,16 @@ abstract class QuizEvent extends Equatable {
 class StartQuiz extends QuizEvent {
   final String category;
   final List<QuizQuestion> questions;
+  final QuizMode mode;
 
-  const StartQuiz({required this.category, required this.questions});
+  const StartQuiz({
+    required this.category,
+    required this.questions,
+    this.mode = QuizMode.standard,
+  });
 
   @override
-  List<Object?> get props => [category, questions];
+  List<Object?> get props => [category, questions, mode];
 }
 
 class SelectAnswer extends QuizEvent {
