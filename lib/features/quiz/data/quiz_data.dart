@@ -1,6 +1,107 @@
 import '../models/quiz_question.dart';
 
 class QuizData {
+  static const int dailyQuestionCount = 3;
+
+  /// Pool of daily challenge questions — one set per day, cycling by day-of-year.
+  static const List<List<QuizQuestion>> _dailyPool = [
+    [
+      QuizQuestion(
+        question: 'What is the largest planet in our solar system?',
+        options: ['Saturn', 'Neptune', 'Jupiter', 'Uranus'],
+        correctIndex: 2,
+      ),
+      QuizQuestion(
+        question: 'Which country invented the game of chess?',
+        options: ['China', 'India', 'Persia', 'Greece'],
+        correctIndex: 1,
+      ),
+      QuizQuestion(
+        question: 'How many sides does a hexagon have?',
+        options: ['5', '6', '7', '8'],
+        correctIndex: 1,
+      ),
+    ],
+    [
+      QuizQuestion(
+        question: 'What is the capital city of Japan?',
+        options: ['Osaka', 'Kyoto', 'Hiroshima', 'Tokyo'],
+        correctIndex: 3,
+      ),
+      QuizQuestion(
+        question: 'Which element has the chemical symbol "O"?',
+        options: ['Gold', 'Osmium', 'Oxygen', 'Oganesson'],
+        correctIndex: 2,
+      ),
+      QuizQuestion(
+        question: 'Who painted the Mona Lisa?',
+        options: ['Michelangelo', 'Raphael', 'Leonardo da Vinci', 'Donatello'],
+        correctIndex: 2,
+      ),
+    ],
+    [
+      QuizQuestion(
+        question: 'What is the fastest land animal?',
+        options: ['Lion', 'Cheetah', 'Leopard', 'Greyhound'],
+        correctIndex: 1,
+      ),
+      QuizQuestion(
+        question: 'In which year did World War II end?',
+        options: ['1943', '1944', '1945', '1946'],
+        correctIndex: 2,
+      ),
+      QuizQuestion(
+        question: 'How many continents are there on Earth?',
+        options: ['5', '6', '7', '8'],
+        correctIndex: 2,
+      ),
+    ],
+    [
+      QuizQuestion(
+        question: 'What is the hardest natural substance on Earth?',
+        options: ['Gold', 'Iron', 'Diamond', 'Quartz'],
+        correctIndex: 2,
+      ),
+      QuizQuestion(
+        question: 'Which ocean is the largest?',
+        options: ['Atlantic', 'Indian', 'Arctic', 'Pacific'],
+        correctIndex: 3,
+      ),
+      QuizQuestion(
+        question: 'How many strings does a violin have?',
+        options: ['3', '4', '5', '6'],
+        correctIndex: 1,
+      ),
+    ],
+    [
+      QuizQuestion(
+        question: 'What language has the most native speakers worldwide?',
+        options: ['English', 'Spanish', 'Mandarin Chinese', 'Hindi'],
+        correctIndex: 2,
+      ),
+      QuizQuestion(
+        question: 'Which planet is closest to the Sun?',
+        options: ['Venus', 'Earth', 'Mercury', 'Mars'],
+        correctIndex: 2,
+      ),
+      QuizQuestion(
+        question: 'What is the square root of 144?',
+        options: ['10', '11', '12', '13'],
+        correctIndex: 2,
+      ),
+    ],
+  ];
+
+  /// Returns today's 3 daily challenge questions, cycling through the pool.
+  static List<QuizQuestion> get dailyQuestions {
+    final dayOfYear = _dayOfYear(DateTime.now());
+    return _dailyPool[dayOfYear % _dailyPool.length];
+  }
+
+  static int _dayOfYear(DateTime date) {
+    return date.difference(DateTime(date.year, 1, 1)).inDays;
+  }
+
   static const Map<String, List<QuizQuestion>> questionsByCategory = {
     'Football': [
       QuizQuestion(

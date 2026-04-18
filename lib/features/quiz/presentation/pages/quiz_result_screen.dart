@@ -3,17 +3,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../bloc/quiz_bloc.dart';
 import '../../data/quiz_data.dart';
+import 'quiz_screen.dart';
 
 class QuizResultScreen extends StatelessWidget {
   final String category;
   final IconData categoryIcon;
   final Color categoryColor;
+  final bool isDailyChallenge;
 
   const QuizResultScreen({
     super.key,
     required this.category,
     required this.categoryIcon,
     required this.categoryColor,
+    this.isDailyChallenge = false,
   });
 
   @override
@@ -208,6 +211,10 @@ class QuizResultScreen extends StatelessWidget {
                               ? Icons.cancel_rounded
                               : Icons.remove_circle_rounded;
 
+                      final questions = isDailyChallenge
+                          ? QuizData.dailyQuestions
+                          : QuizData.questionsByCategory[category]!;
+
                       return Container(
                         margin: const EdgeInsets.only(bottom: 10),
                         padding: const EdgeInsets.symmetric(
@@ -233,7 +240,7 @@ class QuizResultScreen extends StatelessWidget {
                             const SizedBox(width: 12),
                             Expanded(
                               child: Text(
-                                QuizData.questionsByCategory[category]![i].question,
+                                questions[i].question,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
@@ -250,43 +257,50 @@ class QuizResultScreen extends StatelessWidget {
                     const SizedBox(height: 32),
 
                     // ── Action Buttons ───────────────────────────────────
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          context.read<QuizBloc>().add(StartQuiz(
-                                category: category,
-                                questions:
-                                    QuizData.questionsByCategory[category]!,
-                              ));
-                          Navigator.of(context).pop();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18),
+                    if (!isDailyChallenge)
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                builder: (_) => BlocProvider(
+                                  create: (_) => QuizBloc()
+                                    ..add(StartQuiz(
+                                      category: category,
+                                      questions: QuizData
+                                          .questionsByCategory[category]!,
+                                    )),
+                                  child: QuizScreen(
+                                    category: category,
+                                    categoryIcon: categoryIcon,
+                                    categoryColor: categoryColor,
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18),
+                            ),
+                            elevation: 0,
                           ),
-                          elevation: 0,
-                        ),
-                        child: const Text(
-                          'Play Again',
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
+                          child: const Text(
+                            'Play Again',
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 12),
+                    if (!isDailyChallenge) const SizedBox(height: 12),
                     SizedBox(
                       width: double.infinity,
                       child: OutlinedButton(
-                        onPressed: () {
-                          context.read<QuizBloc>().add(RestartQuiz());
-                          Navigator.of(context)
-                            ..pop()
-                            ..pop();
-                        },
+                        onPressed: () => Navigator.of(context).pop(),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: AppColors.textSecondary,
                           side: BorderSide(

@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/app_loading.dart';
+import '../../../daily_challenge/presentation/bloc/daily_challenge_bloc.dart';
+import '../../../quiz/data/quiz_data.dart';
+import '../../../quiz/presentation/bloc/quiz_bloc.dart';
+import '../../../quiz/presentation/pages/quiz_screen.dart';
 import '../bloc/home_bloc.dart';
 import '../widgets/home_widgets.dart';
 
@@ -95,85 +99,179 @@ class HomeScreen extends StatelessWidget {
               ),
               const SizedBox(height: 32),
 
-              // Daily Challenge Card (Glassmorphism)
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  return Container(
-                    padding: EdgeInsets.all(isSmallScreen ? 16 : 24),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          AppColors.primary.withOpacity(0.2),
-                          AppColors.primary.withOpacity(0.05),
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(30),
-                      border:
-                          Border.all(color: AppColors.primary.withOpacity(0.2)),
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(isSmallScreen ? 12 : 16),
-                          decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.15),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Icon(Icons.anchor_rounded,
-                              size: isSmallScreen ? 36 : 48,
-                              color: AppColors.primary),
+              // Daily Challenge Card
+              BlocBuilder<DailyChallengeBloc, DailyChallengeState>(
+                builder: (context, dcState) {
+                  final bool completed =
+                      dcState is DailyChallengeCompleted;
+                  final int answered = dcState is DailyChallengeAvailable
+                      ? dcState.answeredCount
+                      : dcState is DailyChallengeCompleted
+                          ? dcState.totalQuestions
+                          : 0;
+                  const int total = DailyChallengeBloc.totalQuestions;
+                  final double progress = answered / total;
+
+                  return GestureDetector(
+                    onTap: completed
+                        ? null
+                        : () {
+                            final questions = QuizData.dailyQuestions;
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => MultiBlocProvider(
+                                  providers: [
+                                    BlocProvider(
+                                      create: (_) => QuizBloc()
+                                        ..add(StartQuiz(
+                                          category: 'Daily Challenge',
+                                          questions: questions,
+                                        )),
+                                    ),
+                                  ],
+                                  child: QuizScreen(
+                                    category: 'Daily Challenge',
+                                    categoryIcon: Icons.anchor_rounded,
+                                    categoryColor: AppColors.primary,
+                                    isDailyChallenge: true,
+                                  ),
+                                ),
+                              ),
+                            ).then((_) {
+                              // Refresh daily challenge state after returning
+                              context
+                                  .read<DailyChallengeBloc>()
+                                  .add(LoadDailyChallenge());
+                            });
+                          },
+                    child: Container(
+                      padding: EdgeInsets.all(isSmallScreen ? 16 : 24),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: completed
+                              ? [
+                                  const Color(0xFF34D399).withOpacity(0.15),
+                                  const Color(0xFF34D399).withOpacity(0.05),
+                                ]
+                              : [
+                                  AppColors.primary.withOpacity(0.2),
+                                  AppColors.primary.withOpacity(0.05),
+                                ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
                         ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Daily Task',
-                                style: TextStyle(
-                                  color: AppColors.textPrimary,
-                                  fontSize: isSmallScreen ? 18 : 22,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const Text(
-                                '3 Questions • 50 XP',
-                                style: TextStyle(
-                                    color: AppColors.textSecondary, fontSize: 13),
-                              ),
-                              const SizedBox(height: 14),
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: LinearProgressIndicator(
-                                  value: 1 / 3,
-                                  backgroundColor:
-                                      AppColors.primary.withOpacity(0.1),
-                                  valueColor: const AlwaysStoppedAnimation<Color>(
-                                      AppColors.accentOrange),
-                                  minHeight: 8,
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              const Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text('Progress',
+                        borderRadius: BorderRadius.circular(30),
+                        border: Border.all(
+                          color: completed
+                              ? const Color(0xFF34D399).withOpacity(0.25)
+                              : AppColors.primary.withOpacity(0.2),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            padding:
+                                EdgeInsets.all(isSmallScreen ? 12 : 16),
+                            decoration: BoxDecoration(
+                              color: completed
+                                  ? const Color(0xFF34D399).withOpacity(0.15)
+                                  : AppColors.primary.withOpacity(0.15),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Icon(
+                              completed
+                                  ? Icons.check_circle_rounded
+                                  : Icons.anchor_rounded,
+                              size: isSmallScreen ? 36 : 48,
+                              color: completed
+                                  ? const Color(0xFF34D399)
+                                  : AppColors.primary,
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      'Daily Challenge',
                                       style: TextStyle(
+                                        color: AppColors.textPrimary,
+                                        fontSize: isSmallScreen ? 18 : 22,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    if (completed) ...[
+                                      const SizedBox(width: 8),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8, vertical: 3),
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFF34D399)
+                                              .withOpacity(0.15),
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                        child: const Text(
+                                          'Done',
+                                          style: TextStyle(
+                                            color: Color(0xFF34D399),
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                                Text(
+                                  '$total Questions • 50 XP',
+                                  style: const TextStyle(
+                                      color: AppColors.textSecondary,
+                                      fontSize: 13),
+                                ),
+                                const SizedBox(height: 14),
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: LinearProgressIndicator(
+                                    value: progress,
+                                    backgroundColor:
+                                        AppColors.primary.withOpacity(0.1),
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      completed
+                                          ? const Color(0xFF34D399)
+                                          : AppColors.accentOrange,
+                                    ),
+                                    minHeight: 8,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      completed ? 'Completed!' : 'Progress',
+                                      style: const TextStyle(
                                           color: AppColors.textSecondary,
-                                          fontSize: 12)),
-                                  Text('1/3',
-                                      style: TextStyle(
+                                          fontSize: 12),
+                                    ),
+                                    Text(
+                                      '$answered/$total',
+                                      style: const TextStyle(
                                           color: AppColors.textPrimary,
                                           fontSize: 12,
-                                          fontWeight: FontWeight.bold)),
-                                ],
-                              ),
-                            ],
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   );
                 },

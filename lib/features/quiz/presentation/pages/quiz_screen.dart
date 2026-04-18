@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../daily_challenge/presentation/bloc/daily_challenge_bloc.dart';
 import '../bloc/quiz_bloc.dart';
 import '../widgets/answer_option.dart';
 import '../widgets/quiz_lifeline_button.dart';
@@ -10,12 +11,14 @@ class QuizScreen extends StatelessWidget {
   final String category;
   final IconData categoryIcon;
   final Color categoryColor;
+  final bool isDailyChallenge;
 
   const QuizScreen({
     super.key,
     required this.category,
     required this.categoryIcon,
     required this.categoryColor,
+    this.isDailyChallenge = false,
   });
 
   @override
@@ -23,6 +26,11 @@ class QuizScreen extends StatelessWidget {
     return BlocConsumer<QuizBloc, QuizState>(
       listener: (context, state) {
         if (state is QuizFinished) {
+          if (isDailyChallenge) {
+            context
+                .read<DailyChallengeBloc>()
+                .add(CompleteDailyChallenge(state.score));
+          }
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
               builder: (_) => BlocProvider.value(
@@ -31,6 +39,7 @@ class QuizScreen extends StatelessWidget {
                   category: category,
                   categoryIcon: categoryIcon,
                   categoryColor: categoryColor,
+                  isDailyChallenge: isDailyChallenge,
                 ),
               ),
             ),
@@ -106,40 +115,57 @@ class QuizScreen extends StatelessWidget {
                           // ── Question Card ────────────────────────────────
                           Container(
                             width: double.infinity,
-                            padding: const EdgeInsets.all(28),
+                            padding: const EdgeInsets.fromLTRB(20, 18, 20, 22),
                             decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                                colors: [
-                                  categoryColor.withOpacity(0.25),
-                                  AppColors.primary.withOpacity(0.15),
-                                ],
-                              ),
-                              borderRadius: BorderRadius.circular(28),
+                              color: AppColors.surface,
+                              borderRadius: BorderRadius.circular(24),
                               border: Border.all(
-                                color: categoryColor.withOpacity(0.2),
+                                color: AppColors.primary.withOpacity(0.12),
                               ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.primary.withOpacity(0.08),
+                                  blurRadius: 24,
+                                  offset: const Offset(0, 8),
+                                ),
+                              ],
                             ),
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                // Category chip
                                 Container(
-                                  padding: const EdgeInsets.all(12),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 5),
                                   decoration: BoxDecoration(
-                                    color: categoryColor.withOpacity(0.15),
-                                    borderRadius: BorderRadius.circular(16),
+                                    color: categoryColor.withOpacity(0.12),
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
-                                  child: Icon(categoryIcon, color: categoryColor, size: 28),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(categoryIcon,
+                                          color: categoryColor, size: 13),
+                                      const SizedBox(width: 5),
+                                      Text(
+                                        category,
+                                        style: TextStyle(
+                                          color: categoryColor,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                const SizedBox(height: 20),
+                                const SizedBox(height: 14),
                                 Text(
                                   q.question,
-                                  textAlign: TextAlign.center,
                                   style: const TextStyle(
                                     color: AppColors.textPrimary,
-                                    fontSize: 20,
+                                    fontSize: 18,
                                     fontWeight: FontWeight.bold,
-                                    height: 1.4,
+                                    height: 1.45,
                                   ),
                                 ),
                               ],
