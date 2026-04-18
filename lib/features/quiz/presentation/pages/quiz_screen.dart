@@ -189,6 +189,7 @@ class QuizScreen extends StatelessWidget {
                               return const SizedBox(height: 12);
                             }
                             return Padding(
+                              key: ValueKey('q${state.currentIndex}_opt$i'),
                               padding: const EdgeInsets.only(bottom: 12),
                               child: AnswerOption(
                                 label: optionLabels[i],

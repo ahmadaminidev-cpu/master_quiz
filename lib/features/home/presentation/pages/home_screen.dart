@@ -4,6 +4,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/app_loading.dart';
 import '../../../daily_challenge/presentation/bloc/daily_challenge_bloc.dart';
 import '../../../quiz/data/quiz_data.dart';
+import '../../../quiz/data/quiz_repository.dart';
 import '../../../quiz/models/quiz_mode.dart';
 import '../../../quiz/presentation/bloc/quiz_bloc.dart';
 import '../../../quiz/presentation/bloc/exam_bloc.dart';
@@ -14,6 +15,7 @@ import '../../../quiz/presentation/pages/quiz_screen.dart';
 import '../../../quiz/presentation/pages/exam_screen.dart';
 import '../../../quiz/presentation/pages/power_up_screen.dart';
 import '../../../quiz/presentation/pages/time_attack_screen.dart';
+import '../bloc/category_bloc.dart';
 import '../bloc/home_bloc.dart';
 import '../widgets/home_widgets.dart';
 
@@ -309,38 +311,25 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                physics: const BouncingScrollPhysics(),
-                child: Row(
-                  children: [
-                    const CategoryItem(
-                      label: 'Football',
-                      icon: Icons.sports_soccer_rounded,
-                      color: AppColors.accentOrange,
-                    ),
-                    const CategoryItem(
-                      label: 'Science',
-                      icon: Icons.biotech_rounded,
-                      color: AppColors.secondary,
-                    ),
-                    const CategoryItem(
-                      label: 'Fashion',
-                      icon: Icons.checkroom_rounded,
-                      color: AppColors.accent,
-                    ),
-                    CategoryItem(
-                      label: 'Movie',
-                      icon: Icons.movie_filter_rounded,
-                      color: Colors.purpleAccent,
-                    ),
-                    CategoryItem(
-                      label: 'Music',
-                      icon: Icons.music_note_rounded,
-                      color: Colors.tealAccent,
-                    ),
-                  ],
-                ),
+              BlocBuilder<CategoryBloc, CategoryState>(
+                builder: (context, catState) {
+                  if (catState is CategoryLoading ||
+                      catState is CategoryInitial) {
+                    return _CategoryShimmer();
+                  }
+                  if (catState is CategoryError) {
+                    return _CategoryError(
+                      onRetry: () => context
+                          .read<CategoryBloc>()
+                          .add(RetryLoadCategories()),
+                    );
+                  }
+                  if (catState is CategoryLoaded) {
+                    return _CategoryRow(
+                        questionsByCategory: catState.questionsByCategory);
+                  }
+                  return const SizedBox.shrink();
+                },
               ),
               const SizedBox(height: 36),
 
@@ -456,6 +445,127 @@ class HomeScreen extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+// ── Category metadata ─────────────────────────────────────────────────────────
+
+const _categoryMeta = {
+  'Science': (icon: Icons.biotech_rounded, color: AppColors.secondary),
+  'History': (icon: Icons.history_edu_rounded, color: AppColors.accentOrange),
+  'Programming': (icon: Icons.code_rounded, color: AppColors.primary),
+  'DevOps ': (icon: Icons.cloud_rounded, color: Colors.tealAccent),
+  'General Knowledge': (icon: Icons.lightbulb_rounded, color: Colors.purpleAccent),
+};
+
+// ── Category row (loaded) ─────────────────────────────────────────────────────
+
+class _CategoryRow extends StatelessWidget {
+  final Map<String, List<dynamic>> questionsByCategory;
+  const _CategoryRow({required this.questionsByCategory});
+
+  @override
+  Widget build(BuildContext context) {
+    final categories = QuizRepository.categoryNames;
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      physics: const BouncingScrollPhysics(),
+      child: Row(
+        children: categories.map((label) {
+          final meta = _categoryMeta[label] ??
+              (icon: Icons.quiz_rounded, color: AppColors.primary);
+          final questions = questionsByCategory[label] ?? [];
+          return CategoryItem(
+            label: label,
+            icon: meta.icon,
+            color: meta.color,
+            questions: questions.cast(),
+          );
+        }).toList(),
+      ),
+    );
+  }
+}
+
+// ── Shimmer placeholder ───────────────────────────────────────────────────────
+
+class _CategoryShimmer extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      physics: const NeverScrollableScrollPhysics(),
+      child: Row(
+        children: List.generate(5, (i) {
+          return Container(
+            margin: const EdgeInsets.only(right: 20),
+            child: Column(
+              children: [
+                ShimmerEffect(
+                  child: Container(
+                    width: 68,
+                    height: 68,
+                    decoration: BoxDecoration(
+                      color: AppColors.surface,
+                      borderRadius: BorderRadius.circular(22),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                ShimmerEffect(
+                  child: Container(
+                    width: 56,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      color: AppColors.surface,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }),
+      ),
+    );
+  }
+}
+
+// ── Error state ───────────────────────────────────────────────────────────────
+
+class _CategoryError extends StatelessWidget {
+  final VoidCallback onRetry;
+  const _CategoryError({required this.onRetry});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.accent.withOpacity(0.2)),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.wifi_off_rounded,
+              color: AppColors.textSecondary, size: 22),
+          const SizedBox(width: 12),
+          const Expanded(
+            child: Text(
+              'Could not load categories',
+              style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
+            ),
+          ),
+          TextButton(
+            onPressed: onRetry,
+            child: const Text('Retry',
+                style: TextStyle(
+                    color: AppColors.primary, fontWeight: FontWeight.bold)),
+          ),
+        ],
+      ),
     );
   }
 }

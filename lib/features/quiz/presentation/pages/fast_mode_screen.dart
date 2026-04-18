@@ -249,6 +249,7 @@ class FastModeScreen extends StatelessWidget {
                       child: Column(
                         children: List.generate(q.options.length, (i) {
                           return Padding(
+                            key: ValueKey('q${state.currentIndex}_opt$i'),
                             padding: const EdgeInsets.only(bottom: 10),
                             child: AnswerOption(
                               label: optionLabels[i],

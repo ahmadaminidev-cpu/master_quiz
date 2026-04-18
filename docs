@@ -1,0 +1,17 @@
+final response = await http.get(
+    Uri.parse("https://quizapi.io/api/v1/quizzes?limit=20"),
+    headers: {
+    "Authorization":
+        "Bearer qa_sk_63e8906e3a920eaf99c3d83afea1688a245453ba"
+    },
+);
+
+
+final resp = await http.get(
+    Uri.parse(
+        "https://quizapi.io/api/v1/questions?quiz_id=cmmonnld9001ziaut7ffrlwb6&include_answers=true"),
+    headers: {
+    "Authorization":
+        "Bearer qa_sk_63e8906e3a920eaf99c3d83afea1688a245453ba"
+    },
+);

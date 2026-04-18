@@ -243,6 +243,7 @@ class PowerUpScreen extends StatelessWidget {
                               state.hiddenOptions.contains(i) &&
                                   !state.answered;
                           return Padding(
+                            key: ValueKey('q${state.currentIndex}_opt$i'),
                             padding: const EdgeInsets.only(bottom: 10),
                             child: AnswerOption(
                               label: optionLabels[i],

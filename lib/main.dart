@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quiz_app/firebase_options.dart';
 import 'core/theme/app_theme.dart';
 import 'features/daily_challenge/presentation/bloc/daily_challenge_bloc.dart';
+import 'features/home/presentation/bloc/category_bloc.dart';
 import 'features/home/presentation/bloc/home_bloc.dart';
 import 'features/progress/presentation/bloc/progress_bloc.dart';
 import 'features/navigation/presentation/pages/main_navigation.dart';
@@ -27,6 +28,9 @@ class QuizApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => DailyChallengeBloc()..add(LoadDailyChallenge()),
+        ),
+        BlocProvider(
+          create: (context) => CategoryBloc()..add(LoadCategories()),
         ),
       ],
       child: MaterialApp(

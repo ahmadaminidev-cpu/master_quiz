@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/app_theme.dart';
-import '../../../quiz/data/quiz_data.dart';
+import '../../../quiz/models/quiz_question.dart';
 import '../../../quiz/presentation/bloc/quiz_bloc.dart';
 import '../../../quiz/presentation/pages/quiz_screen.dart';
 
@@ -9,21 +9,21 @@ class CategoryItem extends StatelessWidget {
   final String label;
   final IconData icon;
   final Color color;
+  final List<QuizQuestion> questions;
 
   const CategoryItem({
     super.key,
     required this.label,
     required this.icon,
     required this.color,
+    required this.questions,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        final questions = QuizData.questionsByCategory[label];
-        if (questions == null || questions.isEmpty) return;
-
+        if (questions.isEmpty) return;
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (_) => BlocProvider(

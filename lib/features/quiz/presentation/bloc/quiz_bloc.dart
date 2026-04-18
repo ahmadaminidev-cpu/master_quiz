@@ -93,6 +93,7 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
         score: current.score,
         totalQuestions: current.totalQuestions,
         answerResults: current.answerResults,
+        questions: current.questions,
         mode: current.mode,
       ));
       return;
@@ -119,6 +120,7 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
         score: current.score,
         totalQuestions: current.totalQuestions,
         answerResults: current.answerResults,
+        questions: current.questions,
         mode: current.mode,
       ));
       return;

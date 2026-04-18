@@ -88,15 +88,17 @@ class QuizFinished extends QuizState {
   final int totalQuestions;
   final List<bool?> answerResults;
   final QuizMode mode;
+  final List<QuizQuestion> questions;
 
   const QuizFinished({
     required this.category,
     required this.score,
     required this.totalQuestions,
     required this.answerResults,
+    required this.questions,
     this.mode = QuizMode.standard,
   });
 
   @override
-  List<Object?> get props => [category, score, totalQuestions, answerResults, mode];
+  List<Object?> get props => [category, score, totalQuestions, answerResults, mode, questions];
 }
