@@ -6,8 +6,10 @@ import '../../../daily_challenge/presentation/bloc/daily_challenge_bloc.dart';
 import '../../../quiz/data/quiz_data.dart';
 import '../../../quiz/models/quiz_mode.dart';
 import '../../../quiz/presentation/bloc/quiz_bloc.dart';
+import '../../../quiz/presentation/bloc/time_attack_bloc.dart';
 import '../../../quiz/presentation/pages/fast_mode_screen.dart';
 import '../../../quiz/presentation/pages/quiz_screen.dart';
+import '../../../quiz/presentation/pages/time_attack_screen.dart';
 import '../bloc/home_bloc.dart';
 import '../widgets/home_widgets.dart';
 
@@ -363,9 +365,8 @@ class HomeScreen extends StatelessWidget {
                       GameModeCard(
                         title: 'Fast Mode',
                         subtitle: '10 Qs • 5s each',
-                        // icon: Icons.speed_rounded,
+                        icon: Icons.speed_rounded,
                         imagePath: 'assets/logo/fast_mode.png',
-                        players: '24.7K',
                         color: AppColors.primary,
                         onTap: () {
                           Navigator.of(context).push(
@@ -385,25 +386,36 @@ class HomeScreen extends StatelessWidget {
                           );
                         },
                       ),
-                      const GameModeCard(
+                      GameModeCard(
                         title: 'Time Attack',
-                        subtitle: 'Infinite • 1 min',
-                        imagePath: "",
-                        players: '12.5K',
+                        subtitle: '40 Qs • 60s',
+                        icon: Icons.timer_rounded,
+                        imagePath: "assets/logo/time_attack.png",
                         color: AppColors.secondary,
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => BlocProvider(
+                                create: (_) => TimeAttackBloc(
+                                  questions: QuizData.timeAttackQuestions,
+                                )..add(StartTimeAttack()),
+                                child: const TimeAttackScreen(),
+                              ),
+                            ),
+                          );
+                        },
                       ),
                       const GameModeCard(
                         title: 'Power Up',
                         subtitle: '10 Qs • Hard',
-                      imagePath: "",
-                        players: '18.2K',
+                        icon: Icons.bolt_rounded,
+                        imagePath: "assets/logo/power_up.png",
                         color: AppColors.accent,
                       ),
                       const GameModeCard(
                         title: 'Exam Mode',
                         subtitle: '50 Qs • Pro',
-                        imagePath: "",
-                        players: '5.1K',
+                        icon: Icons.menu_book_rounded,
                         color: AppColors.accentOrange,
                       ),
                     ],

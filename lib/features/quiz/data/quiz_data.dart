@@ -53,6 +53,58 @@ class QuizData {
     QuizQuestion(question: 'Which continent is the largest by area?', options: ['Africa', 'Asia', 'Europe', 'Americas'], correctIndex: 1),
   ];
 
+  // ── Time Attack ────────────────────────────────────────────────────────────
+
+  static const List<QuizQuestion> timeAttackQuestions = [
+    // General
+    QuizQuestion(question: 'What is the capital of Australia?', options: ['Sydney', 'Melbourne', 'Canberra', 'Brisbane'], correctIndex: 2),
+    QuizQuestion(question: 'How many sides does a triangle have?', options: ['2', '3', '4', '5'], correctIndex: 1),
+    QuizQuestion(question: 'What is 12 × 12?', options: ['124', '134', '144', '154'], correctIndex: 2),
+    QuizQuestion(question: 'Which gas do plants absorb from the air?', options: ['Oxygen', 'Nitrogen', 'Carbon Dioxide', 'Hydrogen'], correctIndex: 2),
+    QuizQuestion(question: 'What is the longest river in the world?', options: ['Amazon', 'Nile', 'Yangtze', 'Mississippi'], correctIndex: 1),
+    QuizQuestion(question: 'How many colors are in a rainbow?', options: ['5', '6', '7', '8'], correctIndex: 2),
+    QuizQuestion(question: 'What is the smallest country in the world?', options: ['Monaco', 'San Marino', 'Vatican City', 'Liechtenstein'], correctIndex: 2),
+    QuizQuestion(question: 'Which metal is liquid at room temperature?', options: ['Lead', 'Mercury', 'Tin', 'Zinc'], correctIndex: 1),
+    // Science
+    QuizQuestion(question: 'What is the atomic number of carbon?', options: ['4', '6', '8', '12'], correctIndex: 1),
+    QuizQuestion(question: 'What planet is known as the Blue Planet?', options: ['Neptune', 'Uranus', 'Earth', 'Saturn'], correctIndex: 2),
+    QuizQuestion(question: 'How many chambers does the human heart have?', options: ['2', '3', '4', '5'], correctIndex: 2),
+    QuizQuestion(question: 'What is the chemical symbol for gold?', options: ['Go', 'Gd', 'Au', 'Ag'], correctIndex: 2),
+    QuizQuestion(question: 'What force keeps planets in orbit?', options: ['Magnetism', 'Gravity', 'Friction', 'Tension'], correctIndex: 1),
+    QuizQuestion(question: 'What is the most abundant gas in Earth\'s atmosphere?', options: ['Oxygen', 'Carbon Dioxide', 'Argon', 'Nitrogen'], correctIndex: 3),
+    QuizQuestion(question: 'How many bones are in the human spine?', options: ['24', '26', '33', '36'], correctIndex: 2),
+    QuizQuestion(question: 'What is the unit of electrical resistance?', options: ['Volt', 'Ampere', 'Ohm', 'Watt'], correctIndex: 2),
+    // History & Geography
+    QuizQuestion(question: 'In which year did the Berlin Wall fall?', options: ['1987', '1988', '1989', '1990'], correctIndex: 2),
+    QuizQuestion(question: 'Which country has the most natural lakes?', options: ['Russia', 'USA', 'Canada', 'Brazil'], correctIndex: 2),
+    QuizQuestion(question: 'Who was the first US President?', options: ['John Adams', 'Thomas Jefferson', 'George Washington', 'Benjamin Franklin'], correctIndex: 2),
+    QuizQuestion(question: 'What is the capital of Brazil?', options: ['São Paulo', 'Rio de Janeiro', 'Salvador', 'Brasília'], correctIndex: 3),
+    QuizQuestion(question: 'Which ancient wonder was in Alexandria?', options: ['Colossus', 'Lighthouse', 'Hanging Gardens', 'Mausoleum'], correctIndex: 1),
+    QuizQuestion(question: 'What is the largest desert in the world?', options: ['Sahara', 'Arabian', 'Gobi', 'Antarctic'], correctIndex: 3),
+    // Math & Logic
+    QuizQuestion(question: 'What is the square root of 256?', options: ['14', '15', '16', '17'], correctIndex: 2),
+    QuizQuestion(question: 'How many degrees in a right angle?', options: ['45', '60', '90', '180'], correctIndex: 2),
+    QuizQuestion(question: 'What is 15% of 200?', options: ['20', '25', '30', '35'], correctIndex: 2),
+    QuizQuestion(question: 'What comes next: 2, 4, 8, 16, __?', options: ['24', '28', '32', '36'], correctIndex: 2),
+    // Pop Culture & Sports
+    QuizQuestion(question: 'How many players are on a basketball team on court?', options: ['4', '5', '6', '7'], correctIndex: 1),
+    QuizQuestion(question: 'In which sport is a "birdie" a term used?', options: ['Tennis', 'Golf', 'Cricket', 'Baseball'], correctIndex: 1),
+    QuizQuestion(question: 'How many Olympic rings are there?', options: ['4', '5', '6', '7'], correctIndex: 1),
+    QuizQuestion(question: 'Which country won the first FIFA World Cup?', options: ['Brazil', 'Italy', 'Uruguay', 'Argentina'], correctIndex: 2),
+    // Language & Literature
+    QuizQuestion(question: 'How many letters are in the word "RHYTHM"?', options: ['5', '6', '7', '8'], correctIndex: 1),
+    QuizQuestion(question: 'Who wrote "Romeo and Juliet"?', options: ['Charles Dickens', 'William Shakespeare', 'Jane Austen', 'Mark Twain'], correctIndex: 1),
+    QuizQuestion(question: 'What is a synonym for "happy"?', options: ['Sad', 'Angry', 'Joyful', 'Tired'], correctIndex: 2),
+    QuizQuestion(question: 'How many vowels are in the English alphabet?', options: ['4', '5', '6', '7'], correctIndex: 1),
+    // Technology
+    QuizQuestion(question: 'What does "CPU" stand for?', options: ['Central Processing Unit', 'Computer Power Unit', 'Core Processing Utility', 'Central Program Unit'], correctIndex: 0),
+    QuizQuestion(question: 'Which company created the iPhone?', options: ['Samsung', 'Google', 'Apple', 'Microsoft'], correctIndex: 2),
+    QuizQuestion(question: 'What does "HTML" stand for?', options: ['Hyper Text Markup Language', 'High Tech Modern Language', 'Hyper Transfer Markup Logic', 'Home Tool Markup Language'], correctIndex: 0),
+    QuizQuestion(question: 'How many bits are in a byte?', options: ['4', '6', '8', '16'], correctIndex: 2),
+    QuizQuestion(question: 'What year was the World Wide Web invented?', options: ['1985', '1989', '1991', '1995'], correctIndex: 1),
+    QuizQuestion(question: 'Which programming language is known as the "language of the web"?', options: ['Python', 'Java', 'JavaScript', 'C++'], correctIndex: 2),
+  ];
+
   // ── Category Questions ─────────────────────────────────────────────────────
 
   static const Map<String, List<QuizQuestion>> questionsByCategory = {

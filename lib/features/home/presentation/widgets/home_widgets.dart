@@ -70,8 +70,8 @@ class CategoryItem extends StatelessWidget {
 class GameModeCard extends StatelessWidget {
   final String title;
   final String subtitle;
-  final String? imagePath; // optional — takes priority over icon when provided
-  final String players;
+  final IconData icon;
+  final String? imagePath;
   final Color color;
   final VoidCallback? onTap;
 
@@ -79,7 +79,7 @@ class GameModeCard extends StatelessWidget {
     super.key,
     required this.title,
     required this.subtitle,
-    required this.players,
+    required this.icon,
     required this.color,
     this.imagePath,
     this.onTap,
@@ -87,18 +87,20 @@ class GameModeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool hasImage = imagePath != null && imagePath!.isNotEmpty;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
           color: AppColors.surface,
-          borderRadius: BorderRadius.circular(30),
-          border: Border.all(color: AppColors.textSecondary.withOpacity(0.05)),
+          borderRadius: BorderRadius.circular(28),
+          border: Border.all(color: color.withOpacity(0.12)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              blurRadius: 12,
+              color: color.withOpacity(0.08),
+              blurRadius: 16,
               offset: const Offset(0, 6),
             ),
           ],
@@ -106,16 +108,20 @@ class GameModeCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Image or icon
+            // Image / icon badge
             Container(
-              width: 80,
-              height: 80,
-              padding: imagePath != null ? EdgeInsets.zero : const EdgeInsets.all(10),
+              width: 60,
+              height: 60,
+              padding: hasImage
+                  ? const EdgeInsets.all(6)
+                  : const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: imagePath != null ? Colors.transparent : color.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(15),
+                color: color.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(16),
               ),
-              child: Image.asset(imagePath!, fit: BoxFit.contain),
+              child: hasImage
+                  ? Image.asset(imagePath!, fit: BoxFit.contain)
+                  : Icon(icon, size: 26, color: color),
             ),
             const Spacer(),
             Text(
@@ -133,43 +139,40 @@ class GameModeCard extends StatelessWidget {
               subtitle,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                  color: AppColors.textSecondary, fontSize: 11),
+              style: TextStyle(
+                color: AppColors.textSecondary.withOpacity(0.7),
+                fontSize: 11,
+              ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 14),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(
-                  child: Row(
-                    children: [
-                      Icon(Icons.people_alt_rounded,
-                          color: AppColors.textSecondary.withOpacity(0.6),
-                          size: 14),
-                      const SizedBox(width: 4),
-                      Flexible(
-                        child: Text(
-                          players,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: AppColors.textSecondary,
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    'Play',
+                    style: TextStyle(
+                      color: color,
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.all(4),
+                  width: 28,
+                  height: 28,
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.2),
+                    color: color.withOpacity(0.15),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.play_arrow_rounded,
-                      color: AppColors.primary, size: 14),
+                  child: Icon(Icons.play_arrow_rounded,
+                      color: color, size: 16),
                 ),
               ],
             ),
