@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/locale/app_localizations.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../data/quiz_data.dart';
 import '../bloc/exam_bloc.dart';
@@ -12,6 +13,7 @@ class ExamResultScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ExamBloc, ExamState>(
       builder: (context, state) {
+        final l = AppLocalizations.of(context);
         if (state is! ExamFinished) {
           return const Scaffold(backgroundColor: AppColors.background);
         }
@@ -26,20 +28,20 @@ class ExamResultScreen extends StatelessWidget {
         final Color resultColor;
 
         if (percentage >= 80) {
-          title = 'Exam Passed!';
-          subtitle = 'Outstanding knowledge!';
+          title = l.examPassed;
+          subtitle = l.outstanding;
           resultColor = const Color(0xFF34D399);
         } else if (percentage >= 60) {
-          title = 'Good Score!';
-          subtitle = 'Keep studying to improve.';
+          title = l.goodScore;
+          subtitle = l.keepStudying;
           resultColor = AppColors.secondary;
         } else if (percentage >= 40) {
-          title = 'Almost There';
-          subtitle = 'Review the explanations below.';
+          title = l.almostThere;
+          subtitle = l.reviewExplanations;
           resultColor = AppColors.accentOrange;
         } else {
-          title = 'Needs Work';
-          subtitle = 'Study the topics and try again.';
+          title = l.needsWork;
+          subtitle = l.studyTryAgain;
           resultColor = AppColors.accent;
         }
 
@@ -115,21 +117,21 @@ class ExamResultScreen extends StatelessWidget {
                     Row(
                       children: [
                         _StatCard(
-                          label: 'Correct',
+                          label: l.correct,
                           value: '$correct',
                           color: const Color(0xFF34D399),
                           icon: Icons.check_circle_rounded,
                         ),
                         const SizedBox(width: 12),
                         _StatCard(
-                          label: 'Wrong',
+                          label: l.wrong,
                           value: '$wrong',
                           color: AppColors.accent,
                           icon: Icons.cancel_rounded,
                         ),
                         const SizedBox(width: 12),
                         _StatCard(
-                          label: 'Timed Out',
+                          label: l.timedOut,
                           value: '$timedOut',
                           color: AppColors.textSecondary,
                           icon: Icons.timer_off_rounded,
@@ -155,7 +157,7 @@ class ExamResultScreen extends StatelessWidget {
                               color: AppColors.accentOrange, size: 28),
                           const SizedBox(width: 12),
                           Text(
-                            '+${state.score} Credits Earned',
+                            l.creditsEarnedCount(state.score),
                             style: const TextStyle(
                               color: AppColors.textPrimary,
                               fontSize: 18,
@@ -169,11 +171,11 @@ class ExamResultScreen extends StatelessWidget {
                     const SizedBox(height: 28),
 
                     // ── Full review with explanations ────────────────────
-                    const Align(
+                    Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        'Review & Explanations',
-                        style: TextStyle(
+                        l.reviewAndExplanations,
+                        style: const TextStyle(
                           color: AppColors.textPrimary,
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -304,8 +306,8 @@ class ExamResultScreen extends StatelessWidget {
                           ),
                           elevation: 0,
                         ),
-                        child: const Text('Try Again',
-                            style: TextStyle(
+                        child: Text(l.tryAgain,
+                            style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold)),
                       ),
@@ -326,8 +328,8 @@ class ExamResultScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(18),
                           ),
                         ),
-                        child: const Text('Back to Home',
-                            style: TextStyle(fontSize: 16)),
+                        child: Text(l.backToHome,
+                            style: const TextStyle(fontSize: 16)),
                       ),
                     ),
                     const SizedBox(height: 40),

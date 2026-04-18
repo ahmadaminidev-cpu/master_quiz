@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/locale/app_localizations.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../data/quiz_data.dart';
 import '../bloc/power_up_bloc.dart';
@@ -12,6 +13,7 @@ class PowerUpResultScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<PowerUpBloc, PowerUpState>(
       builder: (context, state) {
+        final l = AppLocalizations.of(context);
         if (state is! PowerUpFinished) {
           return const Scaffold(backgroundColor: AppColors.background);
         }
@@ -25,16 +27,16 @@ class PowerUpResultScreen extends StatelessWidget {
         final Color resultColor;
 
         if (percentage >= 80) {
-          title = 'Powered Up!';
+          title = l.poweredUp;
           resultColor = const Color(0xFF34D399);
         } else if (percentage >= 60) {
-          title = 'Good Power!';
+          title = l.goodPower;
           resultColor = AppColors.secondary;
         } else if (percentage >= 40) {
-          title = 'Keep Charging!';
+          title = l.keepCharging;
           resultColor = AppColors.accentOrange;
         } else {
-          title = 'Need More Power!';
+          title = l.needMorePower;
           resultColor = AppColors.accent;
         }
 
@@ -102,9 +104,9 @@ class PowerUpResultScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    const Text(
-                      '10 seconds per question — no mercy!',
-                      style: TextStyle(
+                    Text(
+                      l.noMercy,
+                      style: const TextStyle(
                           color: AppColors.textSecondary, fontSize: 15),
                     ),
 
@@ -114,21 +116,21 @@ class PowerUpResultScreen extends StatelessWidget {
                     Row(
                       children: [
                         _StatCard(
-                          label: 'Correct',
+                          label: l.correct,
                           value: '$correct',
                           color: const Color(0xFF34D399),
                           icon: Icons.check_circle_rounded,
                         ),
                         const SizedBox(width: 12),
                         _StatCard(
-                          label: 'Wrong',
+                          label: l.wrong,
                           value: '$wrong',
                           color: AppColors.accent,
                           icon: Icons.cancel_rounded,
                         ),
                         const SizedBox(width: 12),
                         _StatCard(
-                          label: 'Skipped',
+                          label: l.skipped,
                           value: '$skipped',
                           color: AppColors.textSecondary,
                           icon: Icons.timer_off_rounded,
@@ -154,7 +156,7 @@ class PowerUpResultScreen extends StatelessWidget {
                               color: AppColors.accentOrange, size: 28),
                           const SizedBox(width: 12),
                           Text(
-                            '+${state.score} Credits Earned',
+                            l.creditsEarnedCount(state.score),
                             style: const TextStyle(
                               color: AppColors.textPrimary,
                               fontSize: 18,
@@ -168,11 +170,11 @@ class PowerUpResultScreen extends StatelessWidget {
                     const SizedBox(height: 28),
 
                     // ── Answer review ────────────────────────────────────
-                    const Align(
+                    Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        'Answer Review',
-                        style: TextStyle(
+                        l.answerReview,
+                        style: const TextStyle(
                           color: AppColors.textPrimary,
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -260,9 +262,9 @@ class PowerUpResultScreen extends StatelessWidget {
                           ),
                           elevation: 0,
                         ),
-                        child: const Text(
-                          'Play Again',
-                          style: TextStyle(
+                        child: Text(
+                          l.playAgain,
+                          style: const TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                       ),
@@ -283,8 +285,8 @@ class PowerUpResultScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(18),
                           ),
                         ),
-                        child: const Text('Back to Home',
-                            style: TextStyle(fontSize: 16)),
+                        child: Text(l.backToHome,
+                            style: const TextStyle(fontSize: 16)),
                       ),
                     ),
                     const SizedBox(height: 40),

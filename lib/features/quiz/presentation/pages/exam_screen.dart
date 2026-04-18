@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/locale/app_localizations.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../bloc/exam_bloc.dart';
 import '../widgets/answer_option.dart';
@@ -24,6 +25,7 @@ class ExamScreen extends StatelessWidget {
         }
       },
       builder: (context, state) {
+        final l = AppLocalizations.of(context);
         if (state is! ExamInProgress) {
           return const Scaffold(
             backgroundColor: AppColors.background,
@@ -60,9 +62,9 @@ class ExamScreen extends StatelessWidget {
                         Expanded(
                           child: Column(
                             children: [
-                              const Text(
-                                'Exam Mode',
-                                style: TextStyle(
+                              Text(
+                                l.examMode,
+                                style: const TextStyle(
                                   color: AppColors.textPrimary,
                                   fontSize: 17,
                                   fontWeight: FontWeight.bold,
@@ -152,8 +154,8 @@ class ExamScreen extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Row(
                       children: [
-                        const Text('Time',
-                            style: TextStyle(
+                        Text(l.time,
+                            style: const TextStyle(
                                 color: AppColors.textSecondary,
                                 fontSize: 12)),
                         const SizedBox(width: 10),
@@ -208,15 +210,15 @@ class ExamScreen extends StatelessWidget {
                                   AppColors.accentOrange.withOpacity(0.12),
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: const Row(
+                            child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(Icons.menu_book_rounded,
+                                const Icon(Icons.menu_book_rounded,
                                     color: AppColors.accentOrange, size: 13),
-                                SizedBox(width: 5),
+                                const SizedBox(width: 5),
                                 Text(
-                                  'Exam Mode',
-                                  style: TextStyle(
+                                  l.examMode,
+                                  style: const TextStyle(
                                     color: AppColors.accentOrange,
                                     fontSize: 12,
                                     fontWeight: FontWeight.w600,
@@ -273,6 +275,9 @@ class ExamScreen extends StatelessWidget {
                               timedOut: state.timedOut,
                               correctAnswer:
                                   q.options[q.correctIndex],
+                              timesUpLabel: l.timesUp,
+                              learnFromLabel: l.learnFrom,
+                              correctAnswerLabel: l.correctAnswer(q.options[q.correctIndex]),
                             ),
 
                           const SizedBox(height: 8),
@@ -303,8 +308,8 @@ class ExamScreen extends StatelessWidget {
                           ),
                           child: Text(
                             state.isLastQuestion
-                                ? 'See Results'
-                                : 'Next Question',
+                                ? l.seeResults
+                                : l.nextQuestion,
                             style: const TextStyle(
                                 fontSize: 15, fontWeight: FontWeight.bold),
                           ),
@@ -332,34 +337,35 @@ class ExamScreen extends StatelessWidget {
   }
 
   void _showExitDialog(BuildContext context) {
+    final l = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
         backgroundColor: AppColors.surface,
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        title: const Text(
-          'Quit Exam?',
-          style: TextStyle(
+        title: Text(
+          l.quitExam,
+          style: const TextStyle(
               color: AppColors.textPrimary, fontWeight: FontWeight.bold),
         ),
-        content: const Text(
-          'Your progress will be lost.',
-          style: TextStyle(color: AppColors.textSecondary),
+        content: Text(
+          l.progressLost,
+          style: const TextStyle(color: AppColors.textSecondary),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel',
-                style: TextStyle(color: AppColors.textSecondary)),
+            child: Text(l.cancel,
+                style: const TextStyle(color: AppColors.textSecondary)),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
               Navigator.pop(context);
             },
-            child: const Text('Quit',
-                style: TextStyle(color: AppColors.accent)),
+            child: Text(l.quit,
+                style: const TextStyle(color: AppColors.accent)),
           ),
         ],
       ),
@@ -373,11 +379,17 @@ class _ExplanationPanel extends StatelessWidget {
   final String explanation;
   final bool timedOut;
   final String correctAnswer;
+  final String timesUpLabel;
+  final String learnFromLabel;
+  final String correctAnswerLabel;
 
   const _ExplanationPanel({
     required this.explanation,
     required this.timedOut,
     required this.correctAnswer,
+    required this.timesUpLabel,
+    required this.learnFromLabel,
+    required this.correctAnswerLabel,
   });
 
   @override
@@ -409,7 +421,7 @@ class _ExplanationPanel extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  timedOut ? 'Time\'s up! Here\'s the answer' : 'Learn from this',
+                  timedOut ? timesUpLabel : learnFromLabel,
                   style: const TextStyle(
                     color: AppColors.accentOrange,
                     fontSize: 13,
@@ -436,7 +448,7 @@ class _ExplanationPanel extends StatelessWidget {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      'Correct: $correctAnswer',
+                      correctAnswerLabel,
                       style: const TextStyle(
                         color: Color(0xFF34D399),
                         fontSize: 13,

@@ -1,7 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:quiz_app/firebase_options.dart';
+import 'core/locale/app_localizations.dart';
+import 'core/locale/locale_bloc.dart';
 import 'core/theme/app_theme.dart';
 import 'features/daily_challenge/presentation/bloc/daily_challenge_bloc.dart';
 import 'features/home/presentation/bloc/category_bloc.dart';
@@ -22,22 +25,29 @@ class QuizApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => HomeBloc()..add(LoadHomeData())),
-        BlocProvider(
-          create: (context) => ProgressBloc()..add(LoadProgressData()),
-        ),
-        BlocProvider(
-          create: (context) => DailyChallengeBloc()..add(LoadDailyChallenge()),
-        ),
-        BlocProvider(
-          create: (context) => CategoryBloc()..add(LoadCategories()),
-        ),
+        BlocProvider(create: (_) => LocaleBloc()),
+        BlocProvider(create: (_) => HomeBloc()..add(LoadHomeData())),
+        BlocProvider(create: (_) => ProgressBloc()..add(LoadProgressData())),
+        BlocProvider(create: (_) => DailyChallengeBloc()..add(LoadDailyChallenge())),
+        BlocProvider(create: (_) => CategoryBloc()..add(LoadCategories())),
       ],
-      child: MaterialApp(
-        title: 'Quizora',
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.darkTheme,
-        home: const MainNavigation(),
+      child: BlocBuilder<LocaleBloc, LocaleState>(
+        builder: (context, localeState) {
+          return MaterialApp(
+            title: 'Quizora',
+            debugShowCheckedModeBanner: false,
+            theme: AppTheme.darkTheme,
+            locale: localeState.locale,
+            supportedLocales: const [Locale('en'), Locale('fa')],
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            home: const MainNavigation(),
+          );
+        },
       ),
     );
   }

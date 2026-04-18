@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/locale/app_localizations.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../data/quiz_data.dart';
 import '../bloc/time_attack_bloc.dart';
@@ -12,6 +13,7 @@ class TimeAttackResultScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<TimeAttackBloc, TimeAttackState>(
       builder: (context, state) {
+        final l = AppLocalizations.of(context);
         if (state is! TimeAttackFinished) {
           return const Scaffold(backgroundColor: AppColors.background);
         }
@@ -24,16 +26,16 @@ class TimeAttackResultScreen extends StatelessWidget {
         final Color resultColor;
 
         if (accuracy >= 80) {
-          title = 'Incredible!';
+          title = l.incredible;
           resultColor = const Color(0xFF34D399);
         } else if (accuracy >= 60) {
-          title = 'Great Run!';
+          title = l.greatRun;
           resultColor = AppColors.secondary;
         } else if (accuracy >= 40) {
-          title = 'Not Bad!';
+          title = l.notBadExcl;
           resultColor = AppColors.accentOrange;
         } else {
-          title = 'Keep Going!';
+          title = l.keepGoing;
           resultColor = AppColors.accent;
         }
 
@@ -80,9 +82,9 @@ class TimeAttackResultScreen extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 4),
-                            const Text(
-                              'Accuracy',
-                              style: TextStyle(
+                            Text(
+                              l.accuracy,
+                              style: const TextStyle(
                                 color: AppColors.textSecondary,
                                 fontSize: 13,
                               ),
@@ -104,7 +106,7 @@ class TimeAttackResultScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      'You answered ${state.totalAnswered} questions in 60 seconds',
+                      l.answeredQuestionsIn60(state.totalAnswered),
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         color: AppColors.textSecondary,
@@ -118,21 +120,21 @@ class TimeAttackResultScreen extends StatelessWidget {
                     Row(
                       children: [
                         _StatCard(
-                          label: 'Answered',
+                          label: l.answered,
                           value: '${state.totalAnswered}',
                           color: AppColors.primary,
                           icon: Icons.quiz_rounded,
                         ),
                         const SizedBox(width: 12),
                         _StatCard(
-                          label: 'Correct',
+                          label: l.correct,
                           value: '${state.correctCount}',
                           color: const Color(0xFF34D399),
                           icon: Icons.check_circle_rounded,
                         ),
                         const SizedBox(width: 12),
                         _StatCard(
-                          label: 'Wrong',
+                          label: l.wrong,
                           value:
                               '${state.totalAnswered - state.correctCount}',
                           color: AppColors.accent,
@@ -159,7 +161,7 @@ class TimeAttackResultScreen extends StatelessWidget {
                               color: AppColors.accentOrange, size: 28),
                           const SizedBox(width: 12),
                           Text(
-                            '+${state.score} Credits Earned',
+                            l.creditsEarnedCount(state.score),
                             style: const TextStyle(
                               color: AppColors.textPrimary,
                               fontSize: 18,
@@ -173,11 +175,11 @@ class TimeAttackResultScreen extends StatelessWidget {
                     const SizedBox(height: 28),
 
                     // ── Answer review ────────────────────────────────────
-                    const Align(
+                    Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        'Answer Review',
-                        style: TextStyle(
+                        l.answerReview,
+                        style: const TextStyle(
                           color: AppColors.textPrimary,
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -261,9 +263,9 @@ class TimeAttackResultScreen extends StatelessWidget {
                           ),
                           elevation: 0,
                         ),
-                        child: const Text(
-                          'Play Again',
-                          style: TextStyle(
+                        child: Text(
+                          l.playAgain,
+                          style: const TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                       ),
@@ -284,8 +286,8 @@ class TimeAttackResultScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(18),
                           ),
                         ),
-                        child: const Text('Back to Home',
-                            style: TextStyle(fontSize: 16)),
+                        child: Text(l.backToHome,
+                            style: const TextStyle(fontSize: 16)),
                       ),
                     ),
                     const SizedBox(height: 40),

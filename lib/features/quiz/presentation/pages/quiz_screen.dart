@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/locale/app_localizations.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../daily_challenge/presentation/bloc/daily_challenge_bloc.dart';
 import '../../models/quiz_mode.dart';
@@ -48,6 +49,7 @@ class QuizScreen extends StatelessWidget {
         }
       },
       builder: (context, state) {
+        final l = AppLocalizations.of(context);
         if (state is! QuizInProgress) {
           return const Scaffold(
             backgroundColor: AppColors.background,
@@ -90,7 +92,7 @@ class QuizScreen extends StatelessWidget {
                         ),
                         Expanded(
                           child: Text(
-                            'Question ${state.currentIndex + 1}/${state.totalQuestions}',
+                            l.questionOf(state.currentIndex + 1, state.totalQuestions),
                             textAlign: TextAlign.center,
                             style: const TextStyle(
                               color: AppColors.textPrimary,
@@ -179,6 +181,7 @@ class QuizScreen extends StatelessWidget {
                           _TimerBar(
                             timeRemaining: state.timeRemaining,
                             totalTime: state.mode.questionDuration,
+                            timeLabel: l.time,
                           ),
 
                           const SizedBox(height: 20),
@@ -221,7 +224,7 @@ class QuizScreen extends StatelessWidget {
                                   elevation: 0,
                                 ),
                                 child: Text(
-                                  state.isLastQuestion ? 'See Results' : 'Next Question',
+                                  state.isLastQuestion ? l.seeResults : l.nextQuestion,
                                   style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -245,6 +248,14 @@ class QuizScreen extends StatelessWidget {
                     onSkip: state.answered
                         ? null
                         : () => context.read<QuizBloc>().add(SkipQuestion()),
+                    labelFiftyFifty: l.fiftyFifty,
+                    labelAnswers: l.answers,
+                    labelAudience: l.audience,
+                    labelPoll: l.poll,
+                    labelAddTime: l.addTime,
+                    labelPlus15s: l.plus15s,
+                    labelSkip: l.skip,
+                    labelQuestion: l.questionLabel,
                   ),
                 ],
               ),
@@ -263,30 +274,31 @@ class QuizScreen extends StatelessWidget {
   }
 
   void _showExitDialog(BuildContext context) {
+    final l = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
         backgroundColor: AppColors.surface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        title: const Text(
-          'Quit Quiz?',
-          style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold),
+        title: Text(
+          l.quitQuiz,
+          style: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold),
         ),
-        content: const Text(
-          'Your progress will be lost.',
-          style: TextStyle(color: AppColors.textSecondary),
+        content: Text(
+          l.progressLost,
+          style: const TextStyle(color: AppColors.textSecondary),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel', style: TextStyle(color: AppColors.textSecondary)),
+            child: Text(l.cancel, style: const TextStyle(color: AppColors.textSecondary)),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
               Navigator.pop(context);
             },
-            child: const Text('Quit', style: TextStyle(color: AppColors.accent)),
+            child: Text(l.quit, style: const TextStyle(color: AppColors.accent)),
           ),
         ],
       ),
@@ -323,8 +335,9 @@ class _CircleButton extends StatelessWidget {
 class _TimerBar extends StatelessWidget {
   final int timeRemaining;
   final int totalTime;
+  final String timeLabel;
 
-  const _TimerBar({required this.timeRemaining, required this.totalTime});
+  const _TimerBar({required this.timeRemaining, required this.totalTime, required this.timeLabel});
 
   @override
   Widget build(BuildContext context) {
@@ -336,9 +349,9 @@ class _TimerBar extends StatelessWidget {
 
     return Row(
       children: [
-        const Text(
-          'Time',
-          style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
+        Text(
+          timeLabel,
+          style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
         ),
         const SizedBox(width: 10),
         Expanded(
@@ -370,11 +383,27 @@ class _LifelineBar extends StatelessWidget {
   final bool halfUsed;
   final VoidCallback? onHalfAnswers;
   final VoidCallback? onSkip;
+  final String labelFiftyFifty;
+  final String labelAnswers;
+  final String labelAudience;
+  final String labelPoll;
+  final String labelAddTime;
+  final String labelPlus15s;
+  final String labelSkip;
+  final String labelQuestion;
 
   const _LifelineBar({
     required this.halfUsed,
     required this.onHalfAnswers,
     required this.onSkip,
+    required this.labelFiftyFifty,
+    required this.labelAnswers,
+    required this.labelAudience,
+    required this.labelPoll,
+    required this.labelAddTime,
+    required this.labelPlus15s,
+    required this.labelSkip,
+    required this.labelQuestion,
   });
 
   @override
@@ -392,8 +421,8 @@ class _LifelineBar extends StatelessWidget {
           Expanded(
             child: QuizLifelineButton(
               icon: Icons.filter_2_rounded,
-              label: '50/50',
-              sublabel: 'Answers',
+              label: labelFiftyFifty,
+              sublabel: labelAnswers,
               color: AppColors.accentOrange,
               isUsed: halfUsed,
               onTap: onHalfAnswers,
@@ -403,8 +432,8 @@ class _LifelineBar extends StatelessWidget {
           Expanded(
             child: QuizLifelineButton(
               icon: Icons.people_alt_rounded,
-              label: 'Audience',
-              sublabel: 'Poll',
+              label: labelAudience,
+              sublabel: labelPoll,
               color: AppColors.accentOrange,
               onTap: null, // future feature
             ),
@@ -413,8 +442,8 @@ class _LifelineBar extends StatelessWidget {
           Expanded(
             child: QuizLifelineButton(
               icon: Icons.add_circle_outline_rounded,
-              label: 'Add time',
-              sublabel: '+15s',
+              label: labelAddTime,
+              sublabel: labelPlus15s,
               color: AppColors.accentOrange,
               onTap: null, // future feature
             ),
@@ -423,8 +452,8 @@ class _LifelineBar extends StatelessWidget {
           Expanded(
             child: QuizLifelineButton(
               icon: Icons.skip_next_rounded,
-              label: 'Skip',
-              sublabel: 'Question',
+              label: labelSkip,
+              sublabel: labelQuestion,
               color: AppColors.accentOrange,
               onTap: onSkip,
             ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/locale/app_localizations.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../bloc/quiz_bloc.dart';
 import '../../data/quiz_data.dart';
@@ -34,6 +35,7 @@ class QuizResultScreen extends StatelessWidget {
       return const Scaffold(backgroundColor: AppColors.background);
     }
 
+    final l = AppLocalizations.of(context);
     final correct = state.answerResults.where((r) => r == true).length;
     final skipped = state.answerResults.where((r) => r == null).length;
     final wrong = state.answerResults.where((r) => r == false).length;
@@ -44,20 +46,20 @@ class QuizResultScreen extends StatelessWidget {
     final Color resultColor;
 
     if (percentage >= 80) {
-      resultTitle = 'Excellent!';
-      resultSubtitle = "You're a true expert!";
+      resultTitle = l.excellent;
+      resultSubtitle = l.trueExpert;
       resultColor = const Color(0xFF34D399);
     } else if (percentage >= 60) {
-      resultTitle = 'Good Job!';
-      resultSubtitle = 'Keep practicing to improve!';
+      resultTitle = l.goodJob;
+      resultSubtitle = l.keepPracticing;
       resultColor = AppColors.secondary;
     } else if (percentage >= 40) {
-      resultTitle = 'Not Bad';
-      resultSubtitle = 'You can do better next time!';
+      resultTitle = l.notBad;
+      resultSubtitle = l.canDoBetter;
       resultColor = AppColors.accentOrange;
     } else {
-      resultTitle = 'Keep Trying!';
-      resultSubtitle = 'Practice makes perfect!';
+      resultTitle = l.keepTrying;
+      resultSubtitle = l.practicePerfect;
       resultColor = AppColors.accent;
     }
 
@@ -137,21 +139,21 @@ class QuizResultScreen extends StatelessWidget {
                 Row(
                   children: [
                     _StatCard(
-                      label: 'Correct',
+                      label: l.correct,
                       value: '$correct',
                       color: const Color(0xFF34D399),
                       icon: Icons.check_circle_rounded,
                     ),
                     const SizedBox(width: 12),
                     _StatCard(
-                      label: 'Wrong',
+                      label: l.wrong,
                       value: '$wrong',
                       color: AppColors.accent,
                       icon: Icons.cancel_rounded,
                     ),
                     const SizedBox(width: 12),
                     _StatCard(
-                      label: 'Skipped',
+                      label: l.skipped,
                       value: '$skipped',
                       color: AppColors.textSecondary,
                       icon: Icons.skip_next_rounded,
@@ -177,7 +179,7 @@ class QuizResultScreen extends StatelessWidget {
                           color: AppColors.accentOrange, size: 28),
                       const SizedBox(width: 12),
                       Text(
-                        '+${state.score} Credits Earned',
+                        l.creditsEarnedCount(state.score),
                         style: const TextStyle(
                           color: AppColors.textPrimary,
                           fontSize: 18,
@@ -238,9 +240,9 @@ class QuizResultScreen extends StatelessWidget {
                         ),
                         elevation: 0,
                       ),
-                      child: const Text(
-                        'Play Again',
-                        style: TextStyle(
+                      child: Text(
+                        l.playAgain,
+                        style: const TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -259,9 +261,9 @@ class QuizResultScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(18),
                       ),
                     ),
-                    child: const Text(
-                      'Back to Home',
-                      style: TextStyle(fontSize: 16),
+                    child: Text(
+                      l.backToHome,
+                      style: const TextStyle(fontSize: 16),
                     ),
                   ),
                 ),
@@ -269,11 +271,11 @@ class QuizResultScreen extends StatelessWidget {
                 const SizedBox(height: 32),
 
                 // ── Answer Review ──────────────────────────────────────
-                const Align(
+                Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Answer Review',
-                    style: TextStyle(
+                    l.answerReview,
+                    style: const TextStyle(
                       color: AppColors.textPrimary,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,

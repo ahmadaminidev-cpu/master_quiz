@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/locale/app_localizations.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../bloc/power_up_bloc.dart';
 import '../widgets/answer_option.dart';
@@ -24,6 +25,7 @@ class PowerUpScreen extends StatelessWidget {
         }
       },
       builder: (context, state) {
+        final l = AppLocalizations.of(context);
         if (state is! PowerUpInProgress) {
           return const Scaffold(
             backgroundColor: AppColors.background,
@@ -59,9 +61,9 @@ class PowerUpScreen extends StatelessWidget {
                         Expanded(
                           child: Column(
                             children: [
-                              const Text(
-                                'Power Up',
-                                style: TextStyle(
+                              Text(
+                                l.powerUp,
+                                style: const TextStyle(
                                   color: AppColors.textPrimary,
                                   fontSize: 17,
                                   fontWeight: FontWeight.bold,
@@ -198,15 +200,15 @@ class PowerUpScreen extends StatelessWidget {
                               color: AppColors.accent.withOpacity(0.12),
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: const Row(
+                            child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(Icons.bolt_rounded,
+                                const Icon(Icons.bolt_rounded,
                                     color: AppColors.accent, size: 13),
-                                SizedBox(width: 5),
+                                const SizedBox(width: 5),
                                 Text(
-                                  'Power Up',
-                                  style: TextStyle(
+                                  l.powerUp,
+                                  style: const TextStyle(
                                     color: AppColors.accent,
                                     fontSize: 12,
                                     fontWeight: FontWeight.w600,
@@ -285,8 +287,8 @@ class PowerUpScreen extends StatelessWidget {
                           ),
                           child: Text(
                             state.isLastQuestion
-                                ? 'See Results'
-                                : 'Next Question',
+                                ? l.seeResults
+                                : l.nextQuestion,
                             style: const TextStyle(
                                 fontSize: 15, fontWeight: FontWeight.bold),
                           ),
@@ -303,6 +305,10 @@ class PowerUpScreen extends StatelessWidget {
                         context.read<PowerUpBloc>().add(UseEliminate()),
                     onAddTime: () =>
                         context.read<PowerUpBloc>().add(UseAddTime()),
+                    labelEliminate: l.eliminate,
+                    labelTwoWrong: l.twoWrong,
+                    labelPlus5s: l.plus5s,
+                    labelExtraTime: l.extraTime,
                   ),
                 ],
               ),
@@ -323,34 +329,35 @@ class PowerUpScreen extends StatelessWidget {
   }
 
   void _showExitDialog(BuildContext context) {
+    final l = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
         backgroundColor: AppColors.surface,
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        title: const Text(
-          'Quit Power Up?',
-          style: TextStyle(
+        title: Text(
+          l.quitPowerUp,
+          style: const TextStyle(
               color: AppColors.textPrimary, fontWeight: FontWeight.bold),
         ),
-        content: const Text(
-          'Your progress will be lost.',
-          style: TextStyle(color: AppColors.textSecondary),
+        content: Text(
+          l.progressLost,
+          style: const TextStyle(color: AppColors.textSecondary),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel',
-                style: TextStyle(color: AppColors.textSecondary)),
+            child: Text(l.cancel,
+                style: const TextStyle(color: AppColors.textSecondary)),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
               Navigator.pop(context);
             },
-            child: const Text('Quit',
-                style: TextStyle(color: AppColors.accent)),
+            child: Text(l.quit,
+                style: const TextStyle(color: AppColors.accent)),
           ),
         ],
       ),
@@ -366,6 +373,10 @@ class _PowerUpBar extends StatelessWidget {
   final bool answered;
   final VoidCallback onEliminate;
   final VoidCallback onAddTime;
+  final String labelEliminate;
+  final String labelTwoWrong;
+  final String labelPlus5s;
+  final String labelExtraTime;
 
   const _PowerUpBar({
     required this.eliminateUsed,
@@ -373,6 +384,10 @@ class _PowerUpBar extends StatelessWidget {
     required this.answered,
     required this.onEliminate,
     required this.onAddTime,
+    required this.labelEliminate,
+    required this.labelTwoWrong,
+    required this.labelPlus5s,
+    required this.labelExtraTime,
   });
 
   @override
@@ -392,8 +407,8 @@ class _PowerUpBar extends StatelessWidget {
           Expanded(
             child: _PowerUpButton(
               icon: Icons.filter_2_rounded,
-              label: 'Eliminate',
-              sublabel: '2 wrong answers',
+              label: labelEliminate,
+              sublabel: labelTwoWrong,
               color: const Color(0xFF34D399),
               usesLeft: eliminateUsed ? 0 : 1,
               maxUses: 1,
@@ -406,8 +421,8 @@ class _PowerUpBar extends StatelessWidget {
           Expanded(
             child: _PowerUpButton(
               icon: Icons.add_circle_outline_rounded,
-              label: '+5 Seconds',
-              sublabel: 'Extra time',
+              label: labelPlus5s,
+              sublabel: labelExtraTime,
               color: AppColors.secondary,
               usesLeft: addTimeUsesLeft,
               maxUses: kMaxAddTimeUses,

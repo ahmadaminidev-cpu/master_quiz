@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/locale/app_localizations.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../quiz/models/quiz_question.dart';
 import '../../../quiz/presentation/bloc/quiz_bloc.dart';
@@ -156,7 +157,7 @@ class GameModeCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Text(
-                    'Play',
+                    AppLocalizations.of(context).play,
                     style: TextStyle(
                       color: color,
                       fontSize: 11,

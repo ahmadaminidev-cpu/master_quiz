@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/locale/app_localizations.dart';
+import '../../../../core/locale/language_picker.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/app_loading.dart';
 import '../../../daily_challenge/presentation/bloc/daily_challenge_bloc.dart';
@@ -84,26 +86,28 @@ class HomeScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(15),
                     ),
                     onSelected: (value) {
-                      // Logic will be added later
+                      if (value == 'language') {
+                        showLanguagePicker(context);
+                      }
                     },
                     itemBuilder: (BuildContext context) => [
-                      const PopupMenuItem<String>(
+                      PopupMenuItem<String>(
                         value: 'language',
                         child: Row(
                           children: [
-                            Icon(Icons.translate_rounded, size: 20),
-                            SizedBox(width: 12),
-                            Text('Change Language'),
+                            const Icon(Icons.translate_rounded, size: 20),
+                            const SizedBox(width: 12),
+                            Text(AppLocalizations.of(context).changeLanguage),
                           ],
                         ),
                       ),
-                      const PopupMenuItem<String>(
+                      PopupMenuItem<String>(
                         value: 'save_progress',
                         child: Row(
                           children: [
-                            Icon(Icons.cloud_upload_rounded, size: 20),
-                            SizedBox(width: 12),
-                            Text('Save Progress'),
+                            const Icon(Icons.cloud_upload_rounded, size: 20),
+                            const SizedBox(width: 12),
+                            Text(AppLocalizations.of(context).saveProgress),
                           ],
                         ),
                       ),
@@ -146,7 +150,7 @@ class HomeScreen extends StatelessWidget {
                                         ),
                                       ],
                                       child: QuizScreen(
-                                        category: 'Daily Challenge',
+                                        category: AppLocalizations.of(context).dailyChallengeCategory,
                                         categoryIcon: Icons.anchor_rounded,
                                         categoryColor: AppColors.primary,
                                         isDailyChallenge: true,
@@ -212,7 +216,7 @@ class HomeScreen extends StatelessWidget {
                                 Row(
                                   children: [
                                     Text(
-                                      'Daily Challenge',
+                                      AppLocalizations.of(context).dailyChallenge,
                                       style: TextStyle(
                                         color: AppColors.textPrimary,
                                         fontSize: isSmallScreen ? 18 : 22,
@@ -234,9 +238,9 @@ class HomeScreen extends StatelessWidget {
                                             8,
                                           ),
                                         ),
-                                        child: const Text(
-                                          'Done',
-                                          style: TextStyle(
+                                        child: Text(
+                                          AppLocalizations.of(context).done,
+                                          style: const TextStyle(
                                             color: Color(0xFF34D399),
                                             fontSize: 11,
                                             fontWeight: FontWeight.bold,
@@ -247,7 +251,7 @@ class HomeScreen extends StatelessWidget {
                                   ],
                                 ),
                                 Text(
-                                  '$total Questions • 50 XP',
+                                  AppLocalizations.of(context).dailyQuestionsXp(total),
                                   style: const TextStyle(
                                     color: AppColors.textSecondary,
                                     fontSize: 13,
@@ -274,7 +278,7 @@ class HomeScreen extends StatelessWidget {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      completed ? 'Completed!' : 'Progress',
+                                      completed ? AppLocalizations.of(context).completed : AppLocalizations.of(context).progress,
                                       style: const TextStyle(
                                         color: AppColors.textSecondary,
                                         fontSize: 12,
@@ -302,9 +306,9 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(height: 36),
 
               // Quiz Categories
-              const Text(
-                'Quiz Categories',
-                style: TextStyle(
+              Text(
+                AppLocalizations.of(context).quizCategories,
+                style: const TextStyle(
                   color: AppColors.textPrimary,
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -334,9 +338,9 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(height: 36),
 
               // Games Mode Section
-              const Text(
-                'More Games',
-                style: TextStyle(
+              Text(
+                AppLocalizations.of(context).moreGames,
+                style: const TextStyle(
                   color: AppColors.textPrimary,
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -356,8 +360,8 @@ class HomeScreen extends StatelessWidget {
                     childAspectRatio: aspectRatio,
                     children: [
                       GameModeCard(
-                        title: 'Fast Mode',
-                        subtitle: '10 Qs • 5s each',
+                        title: AppLocalizations.of(context).fastMode,
+                        subtitle: AppLocalizations.of(context).fastModeSub,
                         icon: Icons.speed_rounded,
                         imagePath: 'assets/logo/fast_mode.png',
                         color: AppColors.primary,
@@ -380,10 +384,9 @@ class HomeScreen extends StatelessWidget {
                         },
                       ),
                       GameModeCard(
-                        title: 'Time Attack',
-                        subtitle: '40 Qs • 60s',
+                        title: AppLocalizations.of(context).timeAttack,
+                        subtitle: AppLocalizations.of(context).timeAttackSub,
                         icon: Icons.timer_rounded,
-                        imagePath: "assets/logo/time_attack.png",
                         color: AppColors.secondary,
                         onTap: () {
                           Navigator.of(context).push(
@@ -399,10 +402,9 @@ class HomeScreen extends StatelessWidget {
                         },
                       ),
                       GameModeCard(
-                        title: 'Power Up',
-                        subtitle: '12 Qs • 10s each',
+                        title: AppLocalizations.of(context).powerUp,
+                        subtitle: AppLocalizations.of(context).powerUpSub,
                         icon: Icons.bolt_rounded,
-                        imagePath: "assets/logo/power_up.png",
                         color: AppColors.accent,
                         onTap: () {
                           Navigator.of(context).push(
@@ -418,10 +420,9 @@ class HomeScreen extends StatelessWidget {
                         },
                       ),
                       GameModeCard(
-                        title: 'Exam Mode',
-                        subtitle: '12 Qs • 15s each',
+                        title: AppLocalizations.of(context).examMode,
+                        subtitle: AppLocalizations.of(context).examModeSub,
                         icon: Icons.menu_book_rounded,
-                        imagePath: "assets/logo/exam_mode.png",
                         color: AppColors.accentOrange,
                         onTap: () {
                           Navigator.of(context).push(
@@ -467,17 +468,18 @@ class _CategoryRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     final categories = QuizRepository.categoryNames;
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       physics: const BouncingScrollPhysics(),
       child: Row(
-        children: categories.map((label) {
-          final meta = _categoryMeta[label] ??
+        children: categories.map((apiKey) {
+          final meta = _categoryMeta[apiKey] ??
               (icon: Icons.quiz_rounded, color: AppColors.primary);
-          final questions = questionsByCategory[label] ?? [];
+          final questions = questionsByCategory[apiKey] ?? [];
           return CategoryItem(
-            label: label,
+            label: l.categoryName(apiKey),
             icon: meta.icon,
             color: meta.color,
             questions: questions.cast(),
@@ -552,16 +554,16 @@ class _CategoryError extends StatelessWidget {
           const Icon(Icons.wifi_off_rounded,
               color: AppColors.textSecondary, size: 22),
           const SizedBox(width: 12),
-          const Expanded(
+          Expanded(
             child: Text(
-              'Could not load categories',
-              style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
+              AppLocalizations.of(context).couldNotLoad,
+              style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
             ),
           ),
           TextButton(
             onPressed: onRetry,
-            child: const Text('Retry',
-                style: TextStyle(
+            child: Text(AppLocalizations.of(context).retry,
+                style: const TextStyle(
                     color: AppColors.primary, fontWeight: FontWeight.bold)),
           ),
         ],

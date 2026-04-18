@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/locale/app_localizations.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../home/presentation/pages/home_screen.dart';
 import '../../../progress/presentation/pages/progress_screen.dart';
@@ -53,16 +54,16 @@ class _MainNavigationState extends State<MainNavigation> {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(35),
           child: BottomNavigationBar(
-            items: const[
+            items: [
               BottomNavigationBarItem(
-                icon: Icon(Icons.grid_view_rounded),
-                activeIcon: Icon(Icons.grid_view_rounded),
-                label: 'Home',
+                icon: const Icon(Icons.grid_view_rounded),
+                activeIcon: const Icon(Icons.grid_view_rounded),
+                label: AppLocalizations.of(context).navHome,
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.stars_rounded),
-                activeIcon: Icon(Icons.stars_rounded),
-                label: 'Progress',
+                icon: const Icon(Icons.stars_rounded),
+                activeIcon: const Icon(Icons.stars_rounded),
+                label: AppLocalizations.of(context).navProgress,
               ),
             ],
             currentIndex: _selectedIndex,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/locale/app_localizations.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../models/quiz_mode.dart';
 import '../bloc/quiz_bloc.dart';
@@ -30,6 +31,7 @@ class FastModeScreen extends StatelessWidget {
         }
       },
       builder: (context, state) {
+        final l = AppLocalizations.of(context);
         if (state is! QuizInProgress) {
           return const Scaffold(
             backgroundColor: AppColors.background,
@@ -62,9 +64,9 @@ class FastModeScreen extends StatelessWidget {
                         Expanded(
                           child: Column(
                             children: [
-                              const Text(
-                                'Fast Mode',
-                                style: TextStyle(
+                              Text(
+                                l.fastMode,
+                                style: const TextStyle(
                                   color: AppColors.textPrimary,
                                   fontSize: 17,
                                   fontWeight: FontWeight.bold,
@@ -207,15 +209,15 @@ class FastModeScreen extends StatelessWidget {
                               color: AppColors.primary.withOpacity(0.12),
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: const Row(
+                            child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(Icons.speed_rounded,
+                                const Icon(Icons.speed_rounded,
                                     color: AppColors.primary, size: 13),
-                                SizedBox(width: 5),
+                                const SizedBox(width: 5),
                                 Text(
-                                  'Fast Mode',
-                                  style: TextStyle(
+                                  l.fastMode,
+                                  style: const TextStyle(
                                     color: AppColors.primary,
                                     fontSize: 12,
                                     fontWeight: FontWeight.w600,
@@ -272,8 +274,8 @@ class FastModeScreen extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
                     child: Text(
                       state.answered
-                          ? 'Next question in ${state.timeRemaining}s…'
-                          : 'Tap an answer before time runs out!',
+                          ? l.nextInSeconds(state.timeRemaining)
+                          : l.tapAnswer,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: state.answered
@@ -302,26 +304,27 @@ class FastModeScreen extends StatelessWidget {
   }
 
   void _showExitDialog(BuildContext context) {
+    final l = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
         backgroundColor: AppColors.surface,
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        title: const Text(
-          'Quit Fast Mode?',
-          style: TextStyle(
+        title: Text(
+          l.quitFast,
+          style: const TextStyle(
               color: AppColors.textPrimary, fontWeight: FontWeight.bold),
         ),
-        content: const Text(
-          'Your progress will be lost.',
-          style: TextStyle(color: AppColors.textSecondary),
+        content: Text(
+          l.progressLost,
+          style: const TextStyle(color: AppColors.textSecondary),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel',
-                style: TextStyle(color: AppColors.textSecondary)),
+            child: Text(l.cancel,
+                style: const TextStyle(color: AppColors.textSecondary)),
           ),
           TextButton(
             onPressed: () {
@@ -329,7 +332,7 @@ class FastModeScreen extends StatelessWidget {
               Navigator.pop(context);
             },
             child:
-                const Text('Quit', style: TextStyle(color: AppColors.accent)),
+                Text(l.quit, style: const TextStyle(color: AppColors.accent)),
           ),
         ],
       ),

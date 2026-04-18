@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/locale/app_localizations.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../bloc/time_attack_bloc.dart';
 import '../widgets/answer_option.dart';
@@ -24,6 +25,7 @@ class TimeAttackScreen extends StatelessWidget {
         }
       },
       builder: (context, state) {
+        final l = AppLocalizations.of(context);
         if (state is! TimeAttackInProgress) {
           return const Scaffold(
             backgroundColor: AppColors.background,
@@ -64,9 +66,9 @@ class TimeAttackScreen extends StatelessWidget {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const Text(
-                                    'Time Attack',
-                                    style: TextStyle(
+                                  Text(
+                                    l.timeAttack,
+                                    style: const TextStyle(
                                       color: AppColors.textPrimary,
                                       fontSize: 15,
                                       fontWeight: FontWeight.bold,
@@ -148,19 +150,19 @@ class TimeAttackScreen extends StatelessWidget {
                     child: Row(
                       children: [
                         _StatPill(
-                          label: 'Answered',
+                          label: l.answered,
                           value: '${state.answeredCount}',
                           color: AppColors.primary,
                         ),
                         const SizedBox(width: 10),
                         _StatPill(
-                          label: 'Correct',
+                          label: l.correct,
                           value: '${state.correctCount}',
                           color: const Color(0xFF34D399),
                         ),
                         const SizedBox(width: 10),
                         _StatPill(
-                          label: 'Wrong',
+                          label: l.wrong,
                           value:
                               '${state.answeredCount - state.correctCount}',
                           color: AppColors.accent,
@@ -194,15 +196,15 @@ class TimeAttackScreen extends StatelessWidget {
                               color: AppColors.secondary.withOpacity(0.12),
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: const Row(
+                            child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(Icons.timer_rounded,
+                                const Icon(Icons.timer_rounded,
                                     color: AppColors.secondary, size: 13),
-                                SizedBox(width: 5),
+                                const SizedBox(width: 5),
                                 Text(
-                                  'Time Attack',
-                                  style: TextStyle(
+                                  l.timeAttack,
+                                  style: const TextStyle(
                                     color: AppColors.secondary,
                                     fontSize: 12,
                                     fontWeight: FontWeight.w600,
@@ -258,8 +260,8 @@ class TimeAttackScreen extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(20, 4, 20, 20),
                     child: Text(
                       state.answered
-                          ? 'Next question coming up…'
-                          : 'Answer fast — the clock is ticking!',
+                          ? l.nextComing
+                          : l.answerFast,
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         color: AppColors.textSecondary,
@@ -286,34 +288,35 @@ class TimeAttackScreen extends StatelessWidget {
   }
 
   void _showExitDialog(BuildContext context) {
+    final l = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
         backgroundColor: AppColors.surface,
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        title: const Text(
-          'Quit Time Attack?',
-          style: TextStyle(
+        title: Text(
+          l.quitTimeAttack,
+          style: const TextStyle(
               color: AppColors.textPrimary, fontWeight: FontWeight.bold),
         ),
-        content: const Text(
-          'Your progress will be lost.',
-          style: TextStyle(color: AppColors.textSecondary),
+        content: Text(
+          l.progressLost,
+          style: const TextStyle(color: AppColors.textSecondary),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel',
-                style: TextStyle(color: AppColors.textSecondary)),
+            child: Text(l.cancel,
+                style: const TextStyle(color: AppColors.textSecondary)),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
               Navigator.pop(context);
             },
-            child: const Text('Quit',
-                style: TextStyle(color: AppColors.accent)),
+            child: Text(l.quit,
+                style: const TextStyle(color: AppColors.accent)),
           ),
         ],
       ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/locale/app_localizations.dart';
+import '../../../../core/locale/language_picker.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/app_loading.dart';
 import '../bloc/progress_bloc.dart';
@@ -10,6 +12,8 @@ class ProgressScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+
     return BlocBuilder<ProgressBloc, ProgressState>(
       builder: (context, state) {
         if (state is ProgressLoading || state is ProgressInitial) {
@@ -29,49 +33,41 @@ class ProgressScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 24),
-                // Progress Header with Menu
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     PopupMenuButton<String>(
                       padding: EdgeInsets.zero,
-                      icon: const Icon(
-                        Icons.more_vert_rounded,
-                        color: AppColors.textPrimary,
-                      ),
+                      icon: const Icon(Icons.more_vert_rounded,
+                          color: AppColors.textPrimary),
                       color: AppColors.surface,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
+                          borderRadius: BorderRadius.circular(15)),
                       onSelected: (value) {
-                        // Logic will be added later
+                        if (value == 'language') showLanguagePicker(context);
                       },
-                      itemBuilder: (BuildContext context) => [
-                        const PopupMenuItem<String>(
+                      itemBuilder: (ctx) => [
+                        PopupMenuItem<String>(
                           value: 'language',
-                          child: Row(
-                            children: [
-                              Icon(Icons.translate_rounded, size: 20),
-                              SizedBox(width: 12),
-                              Text('Change Language'),
-                            ],
-                          ),
+                          child: Row(children: [
+                            const Icon(Icons.translate_rounded, size: 20),
+                            const SizedBox(width: 12),
+                            Text(l.changeLanguage),
+                          ]),
                         ),
-                        const PopupMenuItem<String>(
+                        PopupMenuItem<String>(
                           value: 'save_progress',
-                          child: Row(
-                            children: [
-                              Icon(Icons.cloud_upload_rounded, size: 20),
-                              SizedBox(width: 12),
-                              Text('Save Progress'),
-                            ],
-                          ),
+                          child: Row(children: [
+                            const Icon(Icons.cloud_upload_rounded, size: 20),
+                            const SizedBox(width: 12),
+                            Text(l.saveProgress),
+                          ]),
                         ),
                       ],
                     ),
                   ],
                 ),
-                // Level and Main Progress Header
+
                 Center(
                   child: Column(
                     children: [
@@ -84,22 +80,23 @@ class ProgressScreen extends StatelessWidget {
                             child: CircularProgressIndicator(
                               value: levelProgress,
                               strokeWidth: 12,
-                              backgroundColor: AppColors.primary.withOpacity(0.1),
+                              backgroundColor:
+                                  AppColors.primary.withOpacity(0.1),
                               valueColor: const AlwaysStoppedAnimation<Color>(
                                   AppColors.secondary),
                               strokeCap: StrokeCap.round,
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 20),
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Text(
-                                  'Level',
-                                  style: TextStyle(
-                                      color: AppColors.textSecondary, fontSize: 14),
-                                ),
+                                Text(l.level,
+                                    style: const TextStyle(
+                                        color: AppColors.textSecondary,
+                                        fontSize: 14)),
                                 Text(
                                   '${state.currentLevel}',
                                   style: const TextStyle(
@@ -111,7 +108,7 @@ class ProgressScreen extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  '${state.currentCredits} / ${state.maxCredits} Total',
+                                  '${state.currentCredits} / ${state.maxCredits} ${l.level}',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: AppColors.secondary.withOpacity(0.8),
@@ -126,7 +123,7 @@ class ProgressScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 24),
                       Text(
-                        '${state.currentCredits} Credits Earned',
+                        l.creditsEarnedCount(state.currentCredits),
                         style: const TextStyle(
                           color: AppColors.textPrimary,
                           fontSize: 22,
@@ -136,8 +133,10 @@ class ProgressScreen extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         state.currentLevel < state.maxLevel
-                            ? 'Only ${nextLevelCredits - state.currentCredits} credits to Level ${state.currentLevel + 1}'
-                            : 'Maximum Level Reached!',
+                            ? l.creditsToNextLevel(
+                                nextLevelCredits - state.currentCredits,
+                                state.currentLevel + 1)
+                            : l.maxLevel,
                         style: const TextStyle(
                             color: AppColors.textSecondary, fontSize: 14),
                       ),
@@ -146,33 +145,30 @@ class ProgressScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 40),
 
-                // Milestone Section
-                const Text(
-                  'Your Milestones',
-                  style: TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                Text(l.yourMilestones,
+                    style: const TextStyle(
+                      color: AppColors.textPrimary,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    )),
                 const SizedBox(height: 16),
                 MilestoneCard(
-                  title: 'Credit Goal',
-                  subtitle: 'Reach ${state.maxCredits} Credits',
+                  title: l.creditGoal,
+                  subtitle: l.reachCredits(state.maxCredits),
                   progress: state.currentCredits / state.maxCredits,
                   icon: Icons.stars_rounded,
                   color: AppColors.accentOrange,
                 ),
-                const MilestoneCard(
-                  title: 'Quiz Master',
-                  subtitle: 'Solve 100 Questions',
+                MilestoneCard(
+                  title: l.quizMaster,
+                  subtitle: l.solve100,
                   progress: 0.62,
                   icon: Icons.lightbulb_rounded,
                   color: AppColors.secondary,
                 ),
-                const MilestoneCard(
-                  title: 'Streak Hunter',
-                  subtitle: 'Complete 7 Daily Challenges',
+                MilestoneCard(
+                  title: l.streakHunter,
+                  subtitle: l.complete7,
                   progress: 0.71,
                   icon: Icons.local_fire_department_rounded,
                   color: AppColors.accent,
@@ -180,15 +176,12 @@ class ProgressScreen extends StatelessWidget {
 
                 const SizedBox(height: 40),
 
-                // Rewards/Achievements Section
-                const Text(
-                  'Unlocked Rewards',
-                  style: TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                Text(l.unlockedRewards,
+                    style: const TextStyle(
+                      color: AppColors.textPrimary,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    )),
                 const SizedBox(height: 20),
                 GridView.count(
                   shrinkWrap: true,
@@ -196,43 +189,13 @@ class ProgressScreen extends StatelessWidget {
                   crossAxisCount: 3,
                   mainAxisSpacing: 20,
                   crossAxisSpacing: 20,
-                  children: const [
-                    RewardBadge(
-                      title: 'Early Bird',
-                      icon: Icons.wb_sunny_rounded,
-                      color: Colors.amber,
-                      isUnlocked: true,
-                    ),
-                    RewardBadge(
-                      title: 'Quick Thinker',
-                      icon: Icons.bolt_rounded,
-                      color: Colors.cyan,
-                      isUnlocked: true,
-                    ),
-                    RewardBadge(
-                      title: 'Perfect Score',
-                      icon: Icons.emoji_events_rounded,
-                      color: Colors.orange,
-                      isUnlocked: true,
-                    ),
-                    RewardBadge(
-                      title: 'Night Owl',
-                      icon: Icons.dark_mode_rounded,
-                      color: Colors.indigoAccent,
-                      isUnlocked: false,
-                    ),
-                    RewardBadge(
-                      title: 'Grand Master',
-                      icon: Icons.workspace_premium_rounded,
-                      color: Colors.purpleAccent,
-                      isUnlocked: false,
-                    ),
-                    RewardBadge(
-                      title: 'Globetrotter',
-                      icon: Icons.public_rounded,
-                      color: Colors.greenAccent,
-                      isUnlocked: false,
-                    ),
+                  children: [
+                    RewardBadge(title: l.earlyBird, icon: Icons.wb_sunny_rounded, color: Colors.amber, isUnlocked: true),
+                    RewardBadge(title: l.quickThinker, icon: Icons.bolt_rounded, color: Colors.cyan, isUnlocked: true),
+                    RewardBadge(title: l.perfectScore, icon: Icons.emoji_events_rounded, color: Colors.orange, isUnlocked: true),
+                    RewardBadge(title: l.nightOwl, icon: Icons.dark_mode_rounded, color: Colors.indigoAccent, isUnlocked: false),
+                    RewardBadge(title: l.grandMaster, icon: Icons.workspace_premium_rounded, color: Colors.purpleAccent, isUnlocked: false),
+                    RewardBadge(title: l.globetrotter, icon: Icons.public_rounded, color: Colors.greenAccent, isUnlocked: false),
                   ],
                 ),
                 const SizedBox(height: 120),
