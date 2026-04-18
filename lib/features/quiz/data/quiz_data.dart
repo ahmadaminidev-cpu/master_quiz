@@ -53,6 +53,23 @@ class QuizData {
     QuizQuestion(question: 'Which continent is the largest by area?', options: ['Africa', 'Asia', 'Europe', 'Americas'], correctIndex: 1),
   ];
 
+  // ── Power Up ───────────────────────────────────────────────────────────────
+
+  static const List<QuizQuestion> powerUpQuestions = [
+    QuizQuestion(question: 'What is the rarest blood type?', options: ['A+', 'O-', 'AB-', 'B-'], correctIndex: 2),
+    QuizQuestion(question: 'Which element has the highest melting point?', options: ['Iron', 'Tungsten', 'Platinum', 'Carbon'], correctIndex: 1),
+    QuizQuestion(question: 'How many moons does Mars have?', options: ['0', '1', '2', '3'], correctIndex: 2),
+    QuizQuestion(question: 'What is the only mammal capable of true flight?', options: ['Flying squirrel', 'Sugar glider', 'Bat', 'Colugo'], correctIndex: 2),
+    QuizQuestion(question: 'In what year was the Eiffel Tower built?', options: ['1885', '1887', '1889', '1892'], correctIndex: 2),
+    QuizQuestion(question: 'What is the most spoken language in Africa?', options: ['Swahili', 'Arabic', 'Hausa', 'Amharic'], correctIndex: 1),
+    QuizQuestion(question: 'Which organ produces insulin?', options: ['Liver', 'Kidney', 'Pancreas', 'Spleen'], correctIndex: 2),
+    QuizQuestion(question: 'What is the speed of sound in air (approx)?', options: ['243 m/s', '343 m/s', '443 m/s', '543 m/s'], correctIndex: 1),
+    QuizQuestion(question: 'Which country has the most UNESCO World Heritage Sites?', options: ['China', 'France', 'Italy', 'Spain'], correctIndex: 2),
+    QuizQuestion(question: 'What is the chemical formula for table salt?', options: ['KCl', 'NaCl', 'MgCl2', 'CaCl2'], correctIndex: 1),
+    QuizQuestion(question: 'How many teeth does an adult human have?', options: ['28', '30', '32', '34'], correctIndex: 2),
+    QuizQuestion(question: 'Which planet rotates on its side?', options: ['Neptune', 'Saturn', 'Uranus', 'Jupiter'], correctIndex: 2),
+  ];
+
   // ── Time Attack ────────────────────────────────────────────────────────────
 
   static const List<QuizQuestion> timeAttackQuestions = [

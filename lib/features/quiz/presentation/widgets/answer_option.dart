@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_theme.dart';
 
-enum AnswerOptionState { idle, correct, wrong }
+enum AnswerOptionState { idle, correct, wrong, hidden, eliminated }
 
 class AnswerOption extends StatelessWidget {
   final String label;
@@ -26,6 +26,21 @@ class AnswerOption extends StatelessWidget {
     final Widget? trailingIcon;
 
     switch (state) {
+      case AnswerOptionState.hidden:
+        borderColor = Colors.transparent;
+        bgColor = Colors.transparent;
+        labelBg = Colors.transparent;
+        textColor = Colors.transparent;
+        trailingIcon = null;
+        break;
+      case AnswerOptionState.eliminated:
+        borderColor = AppColors.textSecondary.withOpacity(0.15);
+        bgColor = AppColors.textSecondary.withOpacity(0.05);
+        labelBg = AppColors.textSecondary.withOpacity(0.08);
+        textColor = AppColors.textSecondary.withOpacity(0.4);
+        trailingIcon = Icon(Icons.close_rounded,
+            color: AppColors.textSecondary.withOpacity(0.3), size: 20);
+        break;
       case AnswerOptionState.correct:
         borderColor = const Color(0xFF34D399); // emerald
         bgColor = const Color(0xFF34D399).withOpacity(0.12);
@@ -52,7 +67,12 @@ class AnswerOption extends StatelessWidget {
         break;
     }
 
-    return GestureDetector(
+    return IgnorePointer(
+      ignoring: state == AnswerOptionState.hidden,
+      child: AnimatedOpacity(
+        duration: const Duration(milliseconds: 250),
+        opacity: state == AnswerOptionState.hidden ? 0.0 : 1.0,
+        child: GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 250),
@@ -77,7 +97,9 @@ class AnswerOption extends StatelessWidget {
                 style: TextStyle(
                   color: state == AnswerOptionState.idle
                       ? AppColors.primary
-                      : textColor,
+                      : state == AnswerOptionState.eliminated
+                          ? AppColors.textSecondary.withOpacity(0.3)
+                          : textColor,
                   fontWeight: FontWeight.bold,
                   fontSize: 14,
                 ),
@@ -94,8 +116,10 @@ class AnswerOption extends StatelessWidget {
                 ),
               ),
             ),
-            trailingIcon,
+            if (trailingIcon != null) trailingIcon,
           ],
+        ),
+      ),
         ),
       ),
     );

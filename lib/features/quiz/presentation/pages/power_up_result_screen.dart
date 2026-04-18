@@ -1,0 +1,343 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/theme/app_theme.dart';
+import '../../data/quiz_data.dart';
+import '../bloc/power_up_bloc.dart';
+import 'power_up_screen.dart';
+
+class PowerUpResultScreen extends StatelessWidget {
+  const PowerUpResultScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<PowerUpBloc, PowerUpState>(
+      builder: (context, state) {
+        if (state is! PowerUpFinished) {
+          return const Scaffold(backgroundColor: AppColors.background);
+        }
+
+        final correct = state.answerResults.where((r) => r == true).length;
+        final wrong = state.answerResults.where((r) => r == false).length;
+        final skipped = state.answerResults.where((r) => r == null).length;
+        final percentage = (correct / state.totalQuestions * 100).round();
+
+        final String title;
+        final Color resultColor;
+
+        if (percentage >= 80) {
+          title = 'Powered Up!';
+          resultColor = const Color(0xFF34D399);
+        } else if (percentage >= 60) {
+          title = 'Good Power!';
+          resultColor = AppColors.secondary;
+        } else if (percentage >= 40) {
+          title = 'Keep Charging!';
+          resultColor = AppColors.accentOrange;
+        } else {
+          title = 'Need More Power!';
+          resultColor = AppColors.accent;
+        }
+
+        return Scaffold(
+          backgroundColor: AppColors.background,
+          body: Container(
+            decoration: const BoxDecoration(gradient: AppColors.mainGradient),
+            child: SafeArea(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                physics: const BouncingScrollPhysics(),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 32),
+
+                    // ── Score circle ─────────────────────────────────────
+                    Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        SizedBox(
+                          width: 160,
+                          height: 160,
+                          child: CircularProgressIndicator(
+                            value: correct / state.totalQuestions,
+                            strokeWidth: 10,
+                            backgroundColor: AppColors.surface,
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(resultColor),
+                            strokeCap: StrokeCap.round,
+                          ),
+                        ),
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              '$percentage%',
+                              style: TextStyle(
+                                color: resultColor,
+                                fontSize: 40,
+                                fontWeight: FontWeight.bold,
+                                height: 1,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              '$correct/${state.totalQuestions}',
+                              style: const TextStyle(
+                                color: AppColors.textSecondary,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    Text(
+                      title,
+                      style: TextStyle(
+                        color: resultColor,
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      '10 seconds per question — no mercy!',
+                      style: TextStyle(
+                          color: AppColors.textSecondary, fontSize: 15),
+                    ),
+
+                    const SizedBox(height: 32),
+
+                    // ── Stats ────────────────────────────────────────────
+                    Row(
+                      children: [
+                        _StatCard(
+                          label: 'Correct',
+                          value: '$correct',
+                          color: const Color(0xFF34D399),
+                          icon: Icons.check_circle_rounded,
+                        ),
+                        const SizedBox(width: 12),
+                        _StatCard(
+                          label: 'Wrong',
+                          value: '$wrong',
+                          color: AppColors.accent,
+                          icon: Icons.cancel_rounded,
+                        ),
+                        const SizedBox(width: 12),
+                        _StatCard(
+                          label: 'Skipped',
+                          value: '$skipped',
+                          color: AppColors.textSecondary,
+                          icon: Icons.timer_off_rounded,
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    // ── Credits ──────────────────────────────────────────
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: AppColors.surface,
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(
+                            color: AppColors.accent.withOpacity(0.15)),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.stars_rounded,
+                              color: AppColors.accentOrange, size: 28),
+                          const SizedBox(width: 12),
+                          Text(
+                            '+${state.score} Credits Earned',
+                            style: const TextStyle(
+                              color: AppColors.textPrimary,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 28),
+
+                    // ── Answer review ────────────────────────────────────
+                    const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Answer Review',
+                        style: TextStyle(
+                          color: AppColors.textPrimary,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    ...List.generate(state.totalQuestions, (i) {
+                      final result = state.answerResults[i];
+                      final Color dotColor = result == true
+                          ? const Color(0xFF34D399)
+                          : result == false
+                              ? AppColors.accent
+                              : AppColors.textSecondary;
+                      final IconData dotIcon = result == true
+                          ? Icons.check_circle_rounded
+                          : result == false
+                              ? Icons.cancel_rounded
+                              : Icons.timer_off_rounded;
+
+                      return Container(
+                        margin: const EdgeInsets.only(bottom: 10),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 12),
+                        decoration: BoxDecoration(
+                          color: AppColors.surface,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                              color: dotColor.withOpacity(0.2)),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(dotIcon, color: dotColor, size: 20),
+                            const SizedBox(width: 12),
+                            Text(
+                              'Q${i + 1}',
+                              style: const TextStyle(
+                                color: AppColors.textSecondary,
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                QuizData.powerUpQuestions[i].question,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  color: AppColors.textPrimary,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+
+                    const SizedBox(height: 32),
+
+                    // ── Actions ──────────────────────────────────────────
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (_) => BlocProvider(
+                                create: (_) => PowerUpBloc(
+                                  questions: QuizData.powerUpQuestions,
+                                )..add(StartPowerUp()),
+                                child: const PowerUpScreen(),
+                              ),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.accent,
+                          foregroundColor: Colors.white,
+                          padding:
+                              const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                          elevation: 0,
+                        ),
+                        child: const Text(
+                          'Play Again',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: AppColors.textSecondary,
+                          side: BorderSide(
+                              color:
+                                  AppColors.textSecondary.withOpacity(0.3)),
+                          padding:
+                              const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                        ),
+                        child: const Text('Back to Home',
+                            style: TextStyle(fontSize: 16)),
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _StatCard extends StatelessWidget {
+  final String label;
+  final String value;
+  final Color color;
+  final IconData icon;
+
+  const _StatCard({
+    required this.label,
+    required this.value,
+    required this.color,
+    required this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: color.withOpacity(0.2)),
+        ),
+        child: Column(
+          children: [
+            Icon(icon, color: color, size: 24),
+            const SizedBox(height: 8),
+            Text(value,
+                style: TextStyle(
+                    color: color,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold)),
+            const SizedBox(height: 2),
+            Text(label,
+                style: const TextStyle(
+                    color: AppColors.textSecondary, fontSize: 12)),
+          ],
+        ),
+      ),
+    );
+  }
+}

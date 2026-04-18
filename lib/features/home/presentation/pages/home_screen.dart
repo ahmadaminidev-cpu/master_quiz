@@ -6,9 +6,11 @@ import '../../../daily_challenge/presentation/bloc/daily_challenge_bloc.dart';
 import '../../../quiz/data/quiz_data.dart';
 import '../../../quiz/models/quiz_mode.dart';
 import '../../../quiz/presentation/bloc/quiz_bloc.dart';
+import '../../../quiz/presentation/bloc/power_up_bloc.dart';
 import '../../../quiz/presentation/bloc/time_attack_bloc.dart';
 import '../../../quiz/presentation/pages/fast_mode_screen.dart';
 import '../../../quiz/presentation/pages/quiz_screen.dart';
+import '../../../quiz/presentation/pages/power_up_screen.dart';
 import '../../../quiz/presentation/pages/time_attack_screen.dart';
 import '../bloc/home_bloc.dart';
 import '../widgets/home_widgets.dart';
@@ -405,16 +407,29 @@ class HomeScreen extends StatelessWidget {
                           );
                         },
                       ),
-                      const GameModeCard(
+                      GameModeCard(
                         title: 'Power Up',
-                        subtitle: '10 Qs • Hard',
+                        subtitle: '12 Qs • 10s each',
                         icon: Icons.bolt_rounded,
                         imagePath: "assets/logo/power_up.png",
                         color: AppColors.accent,
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => BlocProvider(
+                                create: (_) => PowerUpBloc(
+                                  questions: QuizData.powerUpQuestions,
+                                )..add(StartPowerUp()),
+                                child: const PowerUpScreen(),
+                              ),
+                            ),
+                          );
+                        },
                       ),
                       const GameModeCard(
                         title: 'Exam Mode',
                         subtitle: '50 Qs • Pro',
+                        imagePath: "assets/logo/exam_mode.png",
                         icon: Icons.menu_book_rounded,
                         color: AppColors.accentOrange,
                       ),
