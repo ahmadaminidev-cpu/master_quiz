@@ -7,6 +7,25 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:450989478145:android:83667ee21817d92daa8b00",
+        "android_client_info": {
+          "package_name": "com.ahmad.quizora"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCL9f-0YTh39yHAdYHDcpjfZcgJCL7CQbc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:450989478145:android:961bb7ade640e04faa8b00",
         "android_client_info": {
           "package_name": "com.example.quiz_app"

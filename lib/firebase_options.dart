@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCL9f-0YTh39yHAdYHDcpjfZcgJCL7CQbc',
-    appId: '1:450989478145:android:961bb7ade640e04faa8b00',
+    appId: '1:450989478145:android:83667ee21817d92daa8b00',
     messagingSenderId: '450989478145',
     projectId: 'master-quiz-a7742',
     storageBucket: 'master-quiz-a7742.firebasestorage.app',
@@ -59,10 +59,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyA7nzg9mmlBLFVCeHcrAFKor7aA2KW3bss',
-    appId: '1:450989478145:ios:240c5d415ccdc4afaa8b00',
+    appId: '1:450989478145:ios:c42c4451342a0185aa8b00',
     messagingSenderId: '450989478145',
     projectId: 'master-quiz-a7742',
     storageBucket: 'master-quiz-a7742.firebasestorage.app',
-    iosBundleId: 'com.example.quizApp',
+    iosBundleId: 'com.ahmad.quizora',
   );
+
 }

@@ -30,7 +30,7 @@ class QuizApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
-        title: 'Quiz App',
+        title: 'Quizora',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.darkTheme,
         home: const MainNavigation(),
