@@ -70,7 +70,7 @@ class CategoryItem extends StatelessWidget {
 class GameModeCard extends StatelessWidget {
   final String title;
   final String subtitle;
-  final IconData icon;
+  final String? imagePath; // optional — takes priority over icon when provided
   final String players;
   final Color color;
   final VoidCallback? onTap;
@@ -79,9 +79,9 @@ class GameModeCard extends StatelessWidget {
     super.key,
     required this.title,
     required this.subtitle,
-    required this.icon,
     required this.players,
     required this.color,
+    this.imagePath,
     this.onTap,
   });
 
@@ -106,13 +106,16 @@ class GameModeCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Image or icon
             Container(
-              padding: const EdgeInsets.all(10),
+              width: 80,
+              height: 80,
+              padding: imagePath != null ? EdgeInsets.zero : const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
+                color: imagePath != null ? Colors.transparent : color.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(15),
               ),
-              child: Icon(icon, size: 26, color: color),
+              child: Image.asset(imagePath!, fit: BoxFit.contain),
             ),
             const Spacer(),
             Text(

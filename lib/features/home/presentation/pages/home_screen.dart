@@ -41,13 +41,17 @@ class HomeScreen extends StatelessWidget {
                       Container(
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border: Border.all(color: AppColors.secondary, width: 2),
+                          border: Border.all(
+                            color: AppColors.secondary,
+                            width: 2,
+                          ),
                         ),
                         child: CircleAvatar(
                           radius: isSmallScreen ? 22 : 26,
                           backgroundColor: AppColors.surface,
                           backgroundImage: const NetworkImage(
-                              'https://i.pravatar.cc/150?u=roxane'),
+                            'https://i.pravatar.cc/150?u=roxane',
+                          ),
                         ),
                       ),
                       const SizedBox(width: 14),
@@ -86,15 +90,15 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                       const PopupMenuItem<String>(
-                      value: 'save_progress',
-                      child: Row(
-                        children: [
-                          Icon(Icons.cloud_upload_rounded, size: 20),
-                          SizedBox(width: 12),
-                          Text('Save Progress'),
-                        ],
+                        value: 'save_progress',
+                        child: Row(
+                          children: [
+                            Icon(Icons.cloud_upload_rounded, size: 20),
+                            SizedBox(width: 12),
+                            Text('Save Progress'),
+                          ],
+                        ),
                       ),
-                    ),
                     ],
                   ),
                 ],
@@ -104,13 +108,12 @@ class HomeScreen extends StatelessWidget {
               // Daily Challenge Card
               BlocBuilder<DailyChallengeBloc, DailyChallengeState>(
                 builder: (context, dcState) {
-                  final bool completed =
-                      dcState is DailyChallengeCompleted;
+                  final bool completed = dcState is DailyChallengeCompleted;
                   final int answered = dcState is DailyChallengeAvailable
                       ? dcState.answeredCount
                       : dcState is DailyChallengeCompleted
-                          ? dcState.totalQuestions
-                          : 0;
+                      ? dcState.totalQuestions
+                      : 0;
                   const int total = DailyChallengeBloc.totalQuestions;
                   final double progress = answered / total;
 
@@ -119,32 +122,36 @@ class HomeScreen extends StatelessWidget {
                         ? null
                         : () {
                             final questions = QuizData.dailyQuestions;
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => MultiBlocProvider(
-                                  providers: [
-                                    BlocProvider(
-                                      create: (_) => QuizBloc()
-                                        ..add(StartQuiz(
-                                          category: 'Daily Challenge',
-                                          questions: questions,
-                                        )),
+                            Navigator.of(context)
+                                .push(
+                                  MaterialPageRoute(
+                                    builder: (_) => MultiBlocProvider(
+                                      providers: [
+                                        BlocProvider(
+                                          create: (_) => QuizBloc()
+                                            ..add(
+                                              StartQuiz(
+                                                category: 'Daily Challenge',
+                                                questions: questions,
+                                              ),
+                                            ),
+                                        ),
+                                      ],
+                                      child: QuizScreen(
+                                        category: 'Daily Challenge',
+                                        categoryIcon: Icons.anchor_rounded,
+                                        categoryColor: AppColors.primary,
+                                        isDailyChallenge: true,
+                                      ),
                                     ),
-                                  ],
-                                  child: QuizScreen(
-                                    category: 'Daily Challenge',
-                                    categoryIcon: Icons.anchor_rounded,
-                                    categoryColor: AppColors.primary,
-                                    isDailyChallenge: true,
                                   ),
-                                ),
-                              ),
-                            ).then((_) {
-                              // Refresh daily challenge state after returning
-                              context
-                                  .read<DailyChallengeBloc>()
-                                  .add(LoadDailyChallenge());
-                            });
+                                )
+                                .then((_) {
+                                  // Refresh daily challenge state after returning
+                                  context.read<DailyChallengeBloc>().add(
+                                    LoadDailyChallenge(),
+                                  );
+                                });
                           },
                     child: Container(
                       padding: EdgeInsets.all(isSmallScreen ? 16 : 24),
@@ -172,8 +179,7 @@ class HomeScreen extends StatelessWidget {
                       child: Row(
                         children: [
                           Container(
-                            padding:
-                                EdgeInsets.all(isSmallScreen ? 12 : 16),
+                            padding: EdgeInsets.all(isSmallScreen ? 12 : 16),
                             decoration: BoxDecoration(
                               color: completed
                                   ? const Color(0xFF34D399).withOpacity(0.15)
@@ -209,12 +215,16 @@ class HomeScreen extends StatelessWidget {
                                       const SizedBox(width: 8),
                                       Container(
                                         padding: const EdgeInsets.symmetric(
-                                            horizontal: 8, vertical: 3),
+                                          horizontal: 8,
+                                          vertical: 3,
+                                        ),
                                         decoration: BoxDecoration(
-                                          color: const Color(0xFF34D399)
-                                              .withOpacity(0.15),
-                                          borderRadius:
-                                              BorderRadius.circular(8),
+                                          color: const Color(
+                                            0xFF34D399,
+                                          ).withOpacity(0.15),
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
                                         ),
                                         child: const Text(
                                           'Done',
@@ -231,16 +241,17 @@ class HomeScreen extends StatelessWidget {
                                 Text(
                                   '$total Questions • 50 XP',
                                   style: const TextStyle(
-                                      color: AppColors.textSecondary,
-                                      fontSize: 13),
+                                    color: AppColors.textSecondary,
+                                    fontSize: 13,
+                                  ),
                                 ),
                                 const SizedBox(height: 14),
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(10),
                                   child: LinearProgressIndicator(
                                     value: progress,
-                                    backgroundColor:
-                                        AppColors.primary.withOpacity(0.1),
+                                    backgroundColor: AppColors.primary
+                                        .withOpacity(0.1),
                                     valueColor: AlwaysStoppedAnimation<Color>(
                                       completed
                                           ? const Color(0xFF34D399)
@@ -257,15 +268,17 @@ class HomeScreen extends StatelessWidget {
                                     Text(
                                       completed ? 'Completed!' : 'Progress',
                                       style: const TextStyle(
-                                          color: AppColors.textSecondary,
-                                          fontSize: 12),
+                                        color: AppColors.textSecondary,
+                                        fontSize: 12,
+                                      ),
                                     ),
                                     Text(
                                       '$answered/$total',
                                       style: const TextStyle(
-                                          color: AppColors.textPrimary,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold),
+                                        color: AppColors.textPrimary,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -296,25 +309,30 @@ class HomeScreen extends StatelessWidget {
                 child: Row(
                   children: [
                     const CategoryItem(
-                        label: 'Football',
-                        icon: Icons.sports_soccer_rounded,
-                        color: AppColors.accentOrange),
+                      label: 'Football',
+                      icon: Icons.sports_soccer_rounded,
+                      color: AppColors.accentOrange,
+                    ),
                     const CategoryItem(
-                        label: 'Science',
-                        icon: Icons.biotech_rounded,
-                        color: AppColors.secondary),
+                      label: 'Science',
+                      icon: Icons.biotech_rounded,
+                      color: AppColors.secondary,
+                    ),
                     const CategoryItem(
-                        label: 'Fashion',
-                        icon: Icons.checkroom_rounded,
-                        color: AppColors.accent),
+                      label: 'Fashion',
+                      icon: Icons.checkroom_rounded,
+                      color: AppColors.accent,
+                    ),
                     CategoryItem(
-                        label: 'Movie',
-                        icon: Icons.movie_filter_rounded,
-                        color: Colors.purpleAccent),
+                      label: 'Movie',
+                      icon: Icons.movie_filter_rounded,
+                      color: Colors.purpleAccent,
+                    ),
                     CategoryItem(
-                        label: 'Music',
-                        icon: Icons.music_note_rounded,
-                        color: Colors.tealAccent),
+                      label: 'Music',
+                      icon: Icons.music_note_rounded,
+                      color: Colors.tealAccent,
+                    ),
                   ],
                 ),
               ),
@@ -343,44 +361,51 @@ class HomeScreen extends StatelessWidget {
                     childAspectRatio: aspectRatio,
                     children: [
                       GameModeCard(
-                          title: 'Fast Mode',
-                          subtitle: '10 Qs • 5s each',
-                          icon: Icons.speed_rounded,
-                          players: '24.7K',
-                          color: AppColors.primary,
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => BlocProvider(
-                                  create: (_) => QuizBloc()
-                                    ..add(StartQuiz(
+                        title: 'Fast Mode',
+                        subtitle: '10 Qs • 5s each',
+                        // icon: Icons.speed_rounded,
+                        imagePath: 'assets/logo/fast_mode.png',
+                        players: '24.7K',
+                        color: AppColors.primary,
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => BlocProvider(
+                                create: (_) => QuizBloc()
+                                  ..add(
+                                    StartQuiz(
                                       category: 'Fast Mode',
                                       questions: QuizData.fastModeQuestions,
                                       mode: QuizMode.fast,
-                                    )),
-                                  child: const FastModeScreen(),
-                                ),
+                                    ),
+                                  ),
+                                child: const FastModeScreen(),
                               ),
-                            );
-                          }),
+                            ),
+                          );
+                        },
+                      ),
                       const GameModeCard(
-                          title: 'Time Attack',
-                          subtitle: 'Infinite • 1 min',
-                          icon: Icons.timer_rounded,
-                          players: '12.5K',
-                          color: AppColors.secondary),
+                        title: 'Time Attack',
+                        subtitle: 'Infinite • 1 min',
+                        imagePath: "",
+                        players: '12.5K',
+                        color: AppColors.secondary,
+                      ),
                       const GameModeCard(
-                          title: 'Power Up',
-                          subtitle: '10 Qs • Hard',
-                          icon: Icons.bolt_rounded,
-                          players: '18.2K',
-                          color: AppColors.accent),
+                        title: 'Power Up',
+                        subtitle: '10 Qs • Hard',
+                      imagePath: "",
+                        players: '18.2K',
+                        color: AppColors.accent,
+                      ),
                       const GameModeCard(
-                          title: 'Exam Mode',
-                          subtitle: '50 Qs • Pro',
-                          icon: Icons.menu_book_rounded,
-                          players: '5.1K',
-                          color: AppColors.accentOrange),
+                        title: 'Exam Mode',
+                        subtitle: '50 Qs • Pro',
+                        imagePath: "",
+                        players: '5.1K',
+                        color: AppColors.accentOrange,
+                      ),
                     ],
                   );
                 },
