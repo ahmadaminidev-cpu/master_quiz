@@ -28,8 +28,9 @@ class CategoryItem extends StatelessWidget {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (_) => BlocProvider(
-              create: (_) => QuizBloc()
-                ..add(StartQuiz(category: label, questions: questions)),
+              create: (_) =>
+                  QuizBloc()
+                    ..add(StartQuiz(category: label, questions: questions)),
               child: QuizScreen(
                 category: label,
                 categoryIcon: icon,
@@ -71,7 +72,6 @@ class CategoryItem extends StatelessWidget {
 class GameModeCard extends StatelessWidget {
   final String title;
   final String subtitle;
-  final IconData icon;
   final String? imagePath;
   final Color color;
   final VoidCallback? onTap;
@@ -80,7 +80,6 @@ class GameModeCard extends StatelessWidget {
     super.key,
     required this.title,
     required this.subtitle,
-    required this.icon,
     required this.color,
     this.imagePath,
     this.onTap,
@@ -120,9 +119,7 @@ class GameModeCard extends StatelessWidget {
                 color: color.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(16),
               ),
-              child: hasImage
-                  ? Image.asset(imagePath!, fit: BoxFit.contain)
-                  : Icon(icon, size: 26, color: color),
+              child: Image.asset(imagePath!, fit: BoxFit.contain),
             ),
             const Spacer(),
             Text(
@@ -151,7 +148,9 @@ class GameModeCard extends StatelessWidget {
               children: [
                 Container(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 10, vertical: 5),
+                    horizontal: 10,
+                    vertical: 5,
+                  ),
                   decoration: BoxDecoration(
                     color: color.withOpacity(0.12),
                     borderRadius: BorderRadius.circular(10),
@@ -172,8 +171,7 @@ class GameModeCard extends StatelessWidget {
                     color: color.withOpacity(0.15),
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(Icons.play_arrow_rounded,
-                      color: color, size: 16),
+                  child: Icon(Icons.play_arrow_rounded, color: color, size: 16),
                 ),
               ],
             ),

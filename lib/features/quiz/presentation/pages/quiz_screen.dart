@@ -74,7 +74,9 @@ class QuizScreen extends StatelessWidget {
           }
         }
 
-        return Scaffold(
+        return Directionality(
+          textDirection: TextDirection.ltr,
+          child: Scaffold(
           backgroundColor: AppColors.background,
           body: Container(
             decoration: const BoxDecoration(gradient: AppColors.mainGradient),
@@ -261,6 +263,7 @@ class QuizScreen extends StatelessWidget {
               ),
             ),
           ),
+        ),
         );
       },
     );

@@ -150,7 +150,9 @@ class HomeScreen extends StatelessWidget {
                                         ),
                                       ],
                                       child: QuizScreen(
-                                        category: AppLocalizations.of(context).dailyChallengeCategory,
+                                        category: AppLocalizations.of(
+                                          context,
+                                        ).dailyChallengeCategory,
                                         categoryIcon: Icons.anchor_rounded,
                                         categoryColor: AppColors.primary,
                                         isDailyChallenge: true,
@@ -216,7 +218,9 @@ class HomeScreen extends StatelessWidget {
                                 Row(
                                   children: [
                                     Text(
-                                      AppLocalizations.of(context).dailyChallenge,
+                                      AppLocalizations.of(
+                                        context,
+                                      ).dailyChallenge,
                                       style: TextStyle(
                                         color: AppColors.textPrimary,
                                         fontSize: isSmallScreen ? 18 : 22,
@@ -251,7 +255,9 @@ class HomeScreen extends StatelessWidget {
                                   ],
                                 ),
                                 Text(
-                                  AppLocalizations.of(context).dailyQuestionsXp(total),
+                                  AppLocalizations.of(
+                                    context,
+                                  ).dailyQuestionsXp(total),
                                   style: const TextStyle(
                                     color: AppColors.textSecondary,
                                     fontSize: 13,
@@ -278,7 +284,13 @@ class HomeScreen extends StatelessWidget {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      completed ? AppLocalizations.of(context).completed : AppLocalizations.of(context).progress,
+                                      completed
+                                          ? AppLocalizations.of(
+                                              context,
+                                            ).completed
+                                          : AppLocalizations.of(
+                                              context,
+                                            ).progress,
                                       style: const TextStyle(
                                         color: AppColors.textSecondary,
                                         fontSize: 12,
@@ -323,14 +335,15 @@ class HomeScreen extends StatelessWidget {
                   }
                   if (catState is CategoryError) {
                     return _CategoryError(
-                      onRetry: () => context
-                          .read<CategoryBloc>()
-                          .add(RetryLoadCategories()),
+                      onRetry: () => context.read<CategoryBloc>().add(
+                        RetryLoadCategories(),
+                      ),
                     );
                   }
                   if (catState is CategoryLoaded) {
                     return _CategoryRow(
-                        questionsByCategory: catState.questionsByCategory);
+                      questionsByCategory: catState.questionsByCategory,
+                    );
                   }
                   return const SizedBox.shrink();
                 },
@@ -362,7 +375,6 @@ class HomeScreen extends StatelessWidget {
                       GameModeCard(
                         title: AppLocalizations.of(context).fastMode,
                         subtitle: AppLocalizations.of(context).fastModeSub,
-                        icon: Icons.speed_rounded,
                         imagePath: 'assets/logo/fast_mode.png',
                         color: AppColors.primary,
                         onTap: () {
@@ -386,7 +398,7 @@ class HomeScreen extends StatelessWidget {
                       GameModeCard(
                         title: AppLocalizations.of(context).timeAttack,
                         subtitle: AppLocalizations.of(context).timeAttackSub,
-                        icon: Icons.timer_rounded,
+                        imagePath: "assets/logo/time_attack.png",
                         color: AppColors.secondary,
                         onTap: () {
                           Navigator.of(context).push(
@@ -404,7 +416,7 @@ class HomeScreen extends StatelessWidget {
                       GameModeCard(
                         title: AppLocalizations.of(context).powerUp,
                         subtitle: AppLocalizations.of(context).powerUpSub,
-                        icon: Icons.bolt_rounded,
+                        imagePath: "assets/logo/power_up.png",
                         color: AppColors.accent,
                         onTap: () {
                           Navigator.of(context).push(
@@ -422,15 +434,15 @@ class HomeScreen extends StatelessWidget {
                       GameModeCard(
                         title: AppLocalizations.of(context).examMode,
                         subtitle: AppLocalizations.of(context).examModeSub,
-                        icon: Icons.menu_book_rounded,
+                        imagePath: "assets/logo/exam_mode.png",
                         color: AppColors.accentOrange,
                         onTap: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (_) => BlocProvider(
-                                create: (_) => ExamBloc(
-                                  questions: QuizData.examQuestions,
-                                )..add(StartExam()),
+                                create: (_) =>
+                                    ExamBloc(questions: QuizData.examQuestions)
+                                      ..add(StartExam()),
                                 child: const ExamScreen(),
                               ),
                             ),
@@ -457,7 +469,10 @@ const _categoryMeta = {
   'History': (icon: Icons.history_edu_rounded, color: AppColors.accentOrange),
   'Programming': (icon: Icons.code_rounded, color: AppColors.primary),
   'DevOps ': (icon: Icons.cloud_rounded, color: Colors.tealAccent),
-  'General Knowledge': (icon: Icons.lightbulb_rounded, color: Colors.purpleAccent),
+  'General Knowledge': (
+    icon: Icons.lightbulb_rounded,
+    color: Colors.purpleAccent,
+  ),
 };
 
 // ── Category row (loaded) ─────────────────────────────────────────────────────
@@ -475,7 +490,8 @@ class _CategoryRow extends StatelessWidget {
       physics: const BouncingScrollPhysics(),
       child: Row(
         children: categories.map((apiKey) {
-          final meta = _categoryMeta[apiKey] ??
+          final meta =
+              _categoryMeta[apiKey] ??
               (icon: Icons.quiz_rounded, color: AppColors.primary);
           final questions = questionsByCategory[apiKey] ?? [];
           return CategoryItem(
@@ -551,20 +567,30 @@ class _CategoryError extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Icon(Icons.wifi_off_rounded,
-              color: AppColors.textSecondary, size: 22),
+          const Icon(
+            Icons.wifi_off_rounded,
+            color: AppColors.textSecondary,
+            size: 22,
+          ),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
               AppLocalizations.of(context).couldNotLoad,
-              style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
+              style: const TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 13,
+              ),
             ),
           ),
           TextButton(
             onPressed: onRetry,
-            child: Text(AppLocalizations.of(context).retry,
-                style: const TextStyle(
-                    color: AppColors.primary, fontWeight: FontWeight.bold)),
+            child: Text(
+              AppLocalizations.of(context).retry,
+              style: const TextStyle(
+                color: AppColors.primary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ],
       ),
