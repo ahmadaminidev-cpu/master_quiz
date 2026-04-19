@@ -25,6 +25,21 @@ import '../widgets/home_widgets.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
+  String _formatNextAvailable(DateTime nextAt, BuildContext context) {
+    final now = DateTime.now();
+    final diff = nextAt.difference(now);
+    if (diff.isNegative) return 'Available now';
+
+    final hours = diff.inHours;
+    final minutes = diff.inMinutes % 60;
+    
+    if (hours > 0) {
+      return 'Next challenge in ${hours}h ${minutes}m';
+    } else {
+      return 'Next challenge in ${minutes}m';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -170,6 +185,11 @@ class HomeScreen extends StatelessWidget {
               BlocBuilder<DailyChallengeBloc, DailyChallengeState>(
                 builder: (context, dcState) {
                   final bool completed = dcState is DailyChallengeCompleted;
+                  final DateTime? nextAvailableAt =
+                      dcState is DailyChallengeCompleted
+                          ? dcState.nextAvailableAt
+                          : null;
+
                   final int answered = dcState is DailyChallengeAvailable
                       ? dcState.answeredCount
                       : dcState is DailyChallengeCompleted
@@ -267,9 +287,11 @@ class HomeScreen extends StatelessWidget {
                                 Row(
                                   children: [
                                     Text(
-                                      AppLocalizations.of(
-                                        context,
-                                      ).dailyChallenge,
+                                      completed && nextAvailableAt != null
+                                          ? 'Daily Challenge'
+                                          : AppLocalizations.of(
+                                              context,
+                                            ).dailyChallenge,
                                       style: TextStyle(
                                         color: AppColors.textPrimary,
                                         fontSize: isSmallScreen ? 18 : 22,
@@ -304,9 +326,11 @@ class HomeScreen extends StatelessWidget {
                                   ],
                                 ),
                                 Text(
-                                  AppLocalizations.of(
-                                    context,
-                                  ).dailyQuestionsXp(total),
+                                  completed && nextAvailableAt != null
+                                      ? _formatNextAvailable(nextAvailableAt, context)
+                                      : AppLocalizations.of(
+                                          context,
+                                        ).dailyQuestionsXp(total),
                                   style: const TextStyle(
                                     color: AppColors.textSecondary,
                                     fontSize: 13,

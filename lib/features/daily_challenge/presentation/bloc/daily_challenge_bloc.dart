@@ -1,5 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../../../core/auth/auth_service.dart';
+import '../../../progress/data/progress_repository.dart';
 
 // ── Events ────────────────────────────────────────────────────────────────────
 
@@ -48,14 +51,16 @@ class DailyChallengeAvailable extends DailyChallengeState {
 class DailyChallengeCompleted extends DailyChallengeState {
   final int score;
   final int totalQuestions;
+  final DateTime? nextAvailableAt;
 
   const DailyChallengeCompleted({
     required this.score,
     required this.totalQuestions,
+    this.nextAvailableAt,
   });
 
   @override
-  List<Object?> get props => [score, totalQuestions];
+  List<Object?> get props => [score, totalQuestions, nextAvailableAt];
 }
 
 // ── Bloc ──────────────────────────────────────────────────────────────────────
@@ -63,26 +68,74 @@ class DailyChallengeCompleted extends DailyChallengeState {
 class DailyChallengeBloc
     extends Bloc<DailyChallengeEvent, DailyChallengeState> {
   static const int totalQuestions = 3;
+  final ProgressRepository _repo;
 
-  DailyChallengeBloc() : super(DailyChallengeInitial()) {
+  DailyChallengeBloc({ProgressRepository? repository})
+      : _repo = repository ?? ProgressRepository(),
+        super(DailyChallengeInitial()) {
     on<LoadDailyChallenge>(_onLoad);
     on<CompleteDailyChallenge>(_onComplete);
   }
 
-  void _onLoad(LoadDailyChallenge event, Emitter<DailyChallengeState> emit) {
-    // In a real app this would read from local storage / backend.
-    // For now we always start fresh (0 answered).
+  Future<void> _onLoad(
+      LoadDailyChallenge event, Emitter<DailyChallengeState> emit) async {
+    final user = AuthService.instance.currentUser;
+    DateTime? lastAt;
+
+    if (user != null) {
+      try {
+        final progress = await _repo.load(user.uid);
+        lastAt = progress.lastDailyChallengeAt;
+      } catch (_) {}
+    } else {
+      // Guest user: check local storage
+      final prefs = await SharedPreferences.getInstance();
+      final timestamp = prefs.getInt('last_daily_challenge');
+      if (timestamp != null) {
+        lastAt = DateTime.fromMillisecondsSinceEpoch(timestamp);
+      }
+    }
+
+    if (lastAt != null) {
+      final now = DateTime.now();
+      final diff = now.difference(lastAt);
+      if (diff.inHours < 24) {
+        emit(DailyChallengeCompleted(
+          score: 0,
+          totalQuestions: totalQuestions,
+          nextAvailableAt: lastAt.add(const Duration(hours: 24)),
+        ));
+        return;
+      }
+    }
+
     emit(const DailyChallengeAvailable(
       answeredCount: 0,
       totalQuestions: totalQuestions,
     ));
   }
 
-  void _onComplete(
-      CompleteDailyChallenge event, Emitter<DailyChallengeState> emit) {
+  Future<void> _onComplete(
+      CompleteDailyChallenge event, Emitter<DailyChallengeState> emit) async {
+    final user = AuthService.instance.currentUser;
+    final now = DateTime.now();
+
+    if (user != null) {
+      try {
+        final progress = await _repo.load(user.uid);
+        final updated = progress.withDailyChallenge(now);
+        await _repo.save(user.uid, updated);
+      } catch (_) {}
+    } else {
+      // Guest user: save to local storage
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setInt('last_daily_challenge', now.millisecondsSinceEpoch);
+    }
+
     emit(DailyChallengeCompleted(
       score: event.score,
       totalQuestions: totalQuestions,
+      nextAvailableAt: now.add(const Duration(hours: 24)),
     ));
   }
 }

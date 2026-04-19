@@ -7,6 +7,7 @@ class ProgressData {
   final int maxLevel;
   final List<String> unlockedRewards;
   final Map<String, double> milestones; // key → progress 0.0–1.0
+  final DateTime? lastDailyChallengeAt;
 
   const ProgressData({
     required this.currentCredits,
@@ -15,6 +16,7 @@ class ProgressData {
     required this.maxLevel,
     required this.unlockedRewards,
     required this.milestones,
+    this.lastDailyChallengeAt,
   });
 
   /// Default starting state for a new user.
@@ -29,6 +31,7 @@ class ProgressData {
           'quiz_master': 0.0,
           'streak_hunter': 0.0,
         },
+        lastDailyChallengeAt: null,
       );
 
   factory ProgressData.fromMap(Map<String, dynamic> map) {
@@ -43,6 +46,9 @@ class ProgressData {
           (k, v) => MapEntry(k, (v as num).toDouble()),
         ),
       ),
+      lastDailyChallengeAt: map['lastDailyChallengeAt'] != null
+          ? (map['lastDailyChallengeAt'] as Timestamp).toDate()
+          : null,
     );
   }
 
@@ -53,6 +59,9 @@ class ProgressData {
         'maxLevel': maxLevel,
         'unlockedRewards': unlockedRewards,
         'milestones': milestones,
+        'lastDailyChallengeAt': lastDailyChallengeAt != null
+            ? Timestamp.fromDate(lastDailyChallengeAt!)
+            : null,
         'updatedAt': FieldValue.serverTimestamp(),
       };
 
@@ -70,6 +79,19 @@ class ProgressData {
         ...milestones,
         'credit_goal': (credits / maxCredits).clamp(0.0, 1.0),
       },
+      lastDailyChallengeAt: lastDailyChallengeAt,
+    );
+  }
+
+  ProgressData withDailyChallenge(DateTime time) {
+    return ProgressData(
+      currentCredits: currentCredits,
+      maxCredits: maxCredits,
+      currentLevel: currentLevel,
+      maxLevel: maxLevel,
+      unlockedRewards: unlockedRewards,
+      milestones: milestones,
+      lastDailyChallengeAt: time,
     );
   }
 }

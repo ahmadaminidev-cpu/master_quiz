@@ -34,9 +34,10 @@ class QuizApp extends StatelessWidget {
         BlocProvider(create: (_) => CategoryBloc()..add(LoadCategories())),
       ],
       child: BlocListener<AuthBloc, AuthState>(
-        // Reload progress whenever auth state changes
+        // Reload progress and daily challenge whenever auth state changes
         listener: (context, authState) {
           context.read<ProgressBloc>().add(LoadProgressData());
+          context.read<DailyChallengeBloc>().add(LoadDailyChallenge());
         },
         child: BlocListener<LocaleBloc, LocaleState>(
           listener: (context, localeState) {
