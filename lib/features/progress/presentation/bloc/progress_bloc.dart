@@ -15,6 +15,13 @@ class LoadProgressData extends ProgressEvent {}
 
 class SaveProgressData extends ProgressEvent {}
 
+class AddCredits extends ProgressEvent {
+  final int credits;
+  const AddCredits(this.credits);
+  @override
+  List<Object?> get props => [credits];
+}
+
 // ── States ────────────────────────────────────────────────────────────────────
 
 abstract class ProgressState extends Equatable {
@@ -74,6 +81,7 @@ class ProgressBloc extends Bloc<ProgressEvent, ProgressState> {
         super(ProgressInitial()) {
     on<LoadProgressData>(_onLoad);
     on<SaveProgressData>(_onSave);
+    on<AddCredits>(_onAddCredits);
   }
 
   Future<void> _onLoad(
@@ -101,25 +109,53 @@ class ProgressBloc extends Bloc<ProgressEvent, ProgressState> {
       }
     }
 
-    // ── Not signed in or Firestore failed: use local defaults ────────────
-    await Future.delayed(const Duration(milliseconds: 400));
-    const int currentCredits = 750;
-    const int creditsPerLevel = 200;
-    const int level = (currentCredits ~/ creditsPerLevel) + 1;
+    // ── Not signed in or Firestore failed: use local defaults (starting at 0) ────────────
+    final initial = ProgressData.initial();
 
-    emit(const ProgressLoaded(
-      currentCredits: currentCredits,
-      maxCredits: 1200,
-      currentLevel: level,
-      maxLevel: 6,
-      achievements: ['Early Bird', 'Quick Thinker', 'Perfect Score'],
-      milestones: {
-        'credit_goal': 750 / 1200,
-        'quiz_master': 0.62,
-        'streak_hunter': 0.71,
-      },
+    emit(ProgressLoaded(
+      currentCredits: initial.currentCredits,
+      maxCredits: initial.maxCredits,
+      currentLevel: initial.currentLevel,
+      maxLevel: initial.maxLevel,
+      achievements: initial.unlockedRewards,
+      milestones: initial.milestones,
       isSynced: false,
     ));
+  }
+
+  Future<void> _onAddCredits(
+      AddCredits event, Emitter<ProgressState> emit) async {
+    final current = state;
+    if (current is! ProgressLoaded) return;
+
+    final newCredits = current.currentCredits + event.credits;
+    
+    // Create new data using ProgressData logic for level-ups
+    final initial = ProgressData.initial(); // for defaults
+    final updatedData = ProgressData(
+      currentCredits: newCredits,
+      maxCredits: current.maxCredits,
+      currentLevel: current.currentLevel,
+      maxLevel: current.maxLevel,
+      unlockedRewards: current.achievements,
+      milestones: current.milestones,
+    ).withCredits(newCredits);
+
+    emit(ProgressLoaded(
+      currentCredits: updatedData.currentCredits,
+      maxCredits: updatedData.maxCredits,
+      currentLevel: updatedData.currentLevel,
+      maxLevel: updatedData.maxLevel,
+      achievements: updatedData.unlockedRewards,
+      milestones: updatedData.milestones,
+      isSynced: current.isSynced,
+    ));
+
+    // If signed in, also save to database
+    final user = AuthService.instance.currentUser;
+    if (user != null) {
+      add(SaveProgressData());
+    }
   }
 
   Future<void> _onSave(

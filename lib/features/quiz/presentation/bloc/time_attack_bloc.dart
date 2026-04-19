@@ -195,7 +195,7 @@ class TimeAttackBloc extends Bloc<TimeAttackEvent, TimeAttackState> {
     emit(current.copyWith(
       selectedAnswer: event.selectedIndex,
       answered: true,
-      score: isCorrect ? current.score + 10 : current.score,
+      score: isCorrect ? current.score + 5 : current.score,
       correctCount: isCorrect ? current.correctCount + 1 : current.correctCount,
       answerResults: newResults,
     ));

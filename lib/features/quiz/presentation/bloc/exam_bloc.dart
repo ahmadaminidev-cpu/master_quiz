@@ -186,7 +186,7 @@ class ExamBloc extends Bloc<ExamEvent, ExamState> {
     emit(current.copyWith(
       selectedAnswer: event.selectedIndex,
       answered: true,
-      score: isCorrect ? current.score + 10 : current.score,
+      score: isCorrect ? current.score + 5 : current.score,
       answerResults: newResults,
     ));
   }

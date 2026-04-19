@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/locale/app_localizations.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../progress/presentation/bloc/progress_bloc.dart';
 import '../../models/quiz_mode.dart';
 import '../bloc/quiz_bloc.dart';
 import '../widgets/answer_option.dart';
@@ -15,6 +16,9 @@ class FastModeScreen extends StatelessWidget {
     return BlocConsumer<QuizBloc, QuizState>(
       listener: (context, state) {
         if (state is QuizFinished) {
+          // Add credits to user progress
+          context.read<ProgressBloc>().add(AddCredits(state.score));
+
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
               builder: (_) => BlocProvider.value(

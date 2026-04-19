@@ -27,7 +27,7 @@ class AppLocalizations {
     'change_language': {'en': 'Change Language', 'fa': 'تغییر زبان'},
     'save_progress': {'en': 'Save Progress', 'fa': 'ذخیره پیشرفت'},
     'daily_challenge': {'en': 'Daily Challenge', 'fa': 'چالش روزانه'},
-    'daily_xp': {'en': 'Questions • 50 XP', 'fa': 'سوال • ۵۰ امتیاز'},
+    'daily_xp': {'en': 'Questions • 30 Credits', 'fa': 'سوال • ۳۰ امتیاز'},
     'done': {'en': 'Done', 'fa': 'انجام شد'},
     'completed': {'en': 'Completed!', 'fa': 'تکمیل شد!'},
     'progress': {'en': 'Progress', 'fa': 'پیشرفت'},
@@ -307,8 +307,8 @@ class AppLocalizations {
       : '$n Credits Earned';
 
   String dailyQuestionsXp(int n) => locale.languageCode == 'fa'
-      ? '$n سوال • ۵۰ امتیاز'
-      : '$n Questions • 50 XP';
+      ? '$n سوال • ۳۰ امتیاز'
+      : '$n Questions • 30 Credits';
 
   String correctAnswer(String answer) => locale.languageCode == 'fa'
       ? 'صحیح: $answer'

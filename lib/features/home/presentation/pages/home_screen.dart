@@ -49,30 +49,54 @@ class HomeScreen extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: AppColors.secondary,
-                            width: 2,
-                          ),
-                        ),
-                        child: CircleAvatar(
-                          radius: isSmallScreen ? 22 : 26,
-                          backgroundColor: AppColors.surface,
-                          backgroundImage: const NetworkImage(
-                            'https://i.pravatar.cc/150?u=roxane',
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 14),
-                      Text(
-                        'Roxane Harley',
-                        style: TextStyle(
-                          color: AppColors.textPrimary,
-                          fontSize: isSmallScreen ? 16 : 18,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      BlocBuilder<AuthBloc, AuthState>(
+                        builder: (context, authState) {
+                          String? photoUrl;
+                          String name = 'Guest User';
+                          if (authState is AuthAuthenticated) {
+                            photoUrl = authState.user.photoURL;
+                            name = authState.user.displayName ??
+                                authState.user.email?.split('@').first ??
+                                'User';
+                          }
+
+                          return Row(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: AppColors.secondary,
+                                    width: 2,
+                                  ),
+                                ),
+                                child: CircleAvatar(
+                                  radius: isSmallScreen ? 22 : 26,
+                                  backgroundColor: AppColors.surface,
+                                  backgroundImage: photoUrl != null
+                                      ? NetworkImage(photoUrl)
+                                      : null,
+                                  child: photoUrl == null
+                                      ? Icon(
+                                          Icons.person_rounded,
+                                          color: AppColors.textSecondary,
+                                          size: isSmallScreen ? 24 : 28,
+                                        )
+                                      : null,
+                                ),
+                              ),
+                              const SizedBox(width: 14),
+                              Text(
+                                name,
+                                style: TextStyle(
+                                  color: AppColors.textPrimary,
+                                  fontSize: isSmallScreen ? 16 : 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          );
+                        },
                       ),
                     ],
                   ),

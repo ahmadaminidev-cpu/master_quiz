@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/locale/app_localizations.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../progress/presentation/bloc/progress_bloc.dart';
 import '../bloc/time_attack_bloc.dart';
 import '../widgets/answer_option.dart';
 import 'time_attack_result_screen.dart';
@@ -14,6 +15,9 @@ class TimeAttackScreen extends StatelessWidget {
     return BlocConsumer<TimeAttackBloc, TimeAttackState>(
       listener: (context, state) {
         if (state is TimeAttackFinished) {
+          // Add credits to user progress
+          context.read<ProgressBloc>().add(AddCredits(state.score));
+
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
               builder: (_) => BlocProvider.value(

@@ -67,10 +67,14 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
     final newResults = List<bool?>.from(current.answerResults);
     newResults[current.currentIndex] = isCorrect;
 
+    // Daily Challenge: 10 credits per question
+    // Quiz Category: 5 credits per question
+    final creditsPerQuestion = current.category == 'Daily Challenge' ? 10 : 5;
+
     emit(current.copyWith(
       selectedAnswer: event.selectedIndex,
       answered: true,
-      score: isCorrect ? current.score + 10 : current.score,
+      score: isCorrect ? current.score + creditsPerQuestion : current.score,
       answerResults: newResults,
     ));
 
