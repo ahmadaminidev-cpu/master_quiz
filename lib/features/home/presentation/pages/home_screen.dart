@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/auth/google_sign_in_service.dart';
+import '../../../../core/auth/auth_bloc.dart';
 import '../../../../core/locale/app_localizations.dart';
 import '../../../../core/locale/language_picker.dart';
 import '../../../../core/theme/app_theme.dart';
@@ -89,32 +89,54 @@ class HomeScreen extends StatelessWidget {
                     onSelected: (value) {
                       if (value == 'language') {
                         showLanguagePicker(context);
-                      } else if (value == 'save_progress') {
-                        signInWithGoogle(context);
+                      } else if (value == 'sign_in') {
+                        context.read<AuthBloc>().add(AuthSignInRequested());
                       }
                     },
-                    itemBuilder: (BuildContext context) => [
-                      PopupMenuItem<String>(
-                        value: 'language',
-                        child: Row(
-                          children: [
-                            const Icon(Icons.translate_rounded, size: 20),
-                            const SizedBox(width: 12),
-                            Text(AppLocalizations.of(context).changeLanguage),
-                          ],
+                    itemBuilder: (BuildContext context) {
+                      final isSignedIn =
+                          context.read<AuthBloc>().state is AuthAuthenticated;
+                      return [
+                        PopupMenuItem<String>(
+                          value: 'language',
+                          child: Row(
+                            children: [
+                              const Icon(Icons.translate_rounded, size: 20),
+                              const SizedBox(width: 12),
+                              Text(AppLocalizations.of(context).changeLanguage),
+                            ],
+                          ),
                         ),
-                      ),
-                      PopupMenuItem<String>(
-                        value: 'save_progress',
-                        child: Row(
-                          children: [
-                            const Icon(Icons.cloud_upload_rounded, size: 20),
-                            const SizedBox(width: 12),
-                            Text(AppLocalizations.of(context).saveProgress),
-                          ],
+                        PopupMenuItem<String>(
+                          value: isSignedIn ? null : 'sign_in',
+                          enabled: !isSignedIn,
+                          child: Row(
+                            children: [
+                              Icon(
+                                isSignedIn
+                                    ? Icons.check_circle_rounded
+                                    : Icons.cloud_upload_rounded,
+                                size: 20,
+                                color: isSignedIn
+                                    ? AppColors.secondary
+                                    : null,
+                              ),
+                              const SizedBox(width: 12),
+                              Text(
+                                isSignedIn
+                                    ? 'Already Logged In'
+                                    : AppLocalizations.of(context).saveProgress,
+                                style: TextStyle(
+                                  color: isSignedIn
+                                      ? AppColors.textSecondary
+                                      : null,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ];
+                    },
                   ),
                 ],
               ),

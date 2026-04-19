@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/auth/google_sign_in_service.dart';
+import '../../../../core/auth/auth_bloc.dart';
 import '../../../../core/locale/app_localizations.dart';
 import '../../../../core/locale/language_picker.dart';
 import '../../../../core/theme/app_theme.dart';
@@ -15,7 +15,32 @@ class ProgressScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
 
-    return BlocBuilder<ProgressBloc, ProgressState>(
+    return BlocListener<ProgressBloc, ProgressState>(
+      listener: (context, state) {
+        if (state is ProgressSaved) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text('Progress saved to cloud ☁️'),
+              backgroundColor: AppColors.secondary,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+            ),
+          );
+        }
+        if (state is ProgressError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Save failed: ${state.message}'),
+              backgroundColor: AppColors.accent,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+            ),
+          );
+        }
+      },
+      child: BlocBuilder<ProgressBloc, ProgressState>(
       builder: (context, state) {
         if (state is ProgressLoading || state is ProgressInitial) {
           return const ProgressSkeleton();
@@ -35,8 +60,34 @@ class ProgressScreen extends StatelessWidget {
               children: [
                 const SizedBox(height: 24),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    // Signed-in user chip
+                    BlocBuilder<AuthBloc, AuthState>(
+                      builder: (context, authState) {
+                        if (authState is AuthAuthenticated) {
+                          return Row(
+                            children: [
+                              if (authState.user.photoURL != null)
+                                CircleAvatar(
+                                  backgroundImage:
+                                      NetworkImage(authState.user.photoURL!),
+                                  radius: 16,
+                                ),
+                              const SizedBox(width: 8),
+                              Text(
+                                authState.user.displayName ?? authState.user.email ?? '',
+                                style: const TextStyle(
+                                  color: AppColors.textSecondary,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ],
+                          );
+                        }
+                        return const SizedBox.shrink();
+                      },
+                    ),
                     PopupMenuButton<String>(
                       padding: EdgeInsets.zero,
                       icon: const Icon(Icons.more_vert_rounded,
@@ -46,26 +97,48 @@ class ProgressScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(15)),
                       onSelected: (value) {
                         if (value == 'language') showLanguagePicker(context);
-                        if (value == 'save_progress') signInWithGoogle(context);
+                        if (value == 'save_progress') {
+                          context.read<ProgressBloc>().add(SaveProgressData());
+                        }
                       },
-                      itemBuilder: (ctx) => [
-                        PopupMenuItem<String>(
-                          value: 'language',
-                          child: Row(children: [
-                            const Icon(Icons.translate_rounded, size: 20),
-                            const SizedBox(width: 12),
-                            Text(l.changeLanguage),
-                          ]),
-                        ),
-                        PopupMenuItem<String>(
-                          value: 'save_progress',
-                          child: Row(children: [
-                            const Icon(Icons.cloud_upload_rounded, size: 20),
-                            const SizedBox(width: 12),
-                            Text(l.saveProgress),
-                          ]),
-                        ),
-                      ],
+                      itemBuilder: (ctx) {
+                        final isSignedIn =
+                            context.read<AuthBloc>().state is AuthAuthenticated;
+                        return [
+                          PopupMenuItem<String>(
+                            value: 'language',
+                            child: Row(children: [
+                              const Icon(Icons.translate_rounded, size: 20),
+                              const SizedBox(width: 12),
+                              Text(l.changeLanguage),
+                            ]),
+                          ),
+                          PopupMenuItem<String>(
+                            value: isSignedIn ? 'save_progress' : null,
+                            enabled: isSignedIn,
+                            child: Row(children: [
+                              Icon(
+                                isSignedIn
+                                    ? Icons.cloud_upload_rounded
+                                    : Icons.check_circle_rounded,
+                                size: 20,
+                                color: isSignedIn ? null : AppColors.secondary,
+                              ),
+                              const SizedBox(width: 12),
+                              Text(
+                                isSignedIn
+                                    ? l.saveProgress
+                                    : 'Already Logged In',
+                                style: TextStyle(
+                                  color: isSignedIn
+                                      ? null
+                                      : AppColors.textSecondary,
+                                ),
+                              ),
+                            ]),
+                          ),
+                        ];
+                      },
                     ),
                   ],
                 ),
@@ -208,6 +281,7 @@ class ProgressScreen extends StatelessWidget {
 
         return const Center(child: Text('Error loading progress'));
       },
+      ),
     );
   }
 }
