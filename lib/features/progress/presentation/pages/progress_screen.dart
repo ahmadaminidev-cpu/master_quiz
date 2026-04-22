@@ -60,7 +60,6 @@ class ProgressScreen extends StatelessWidget {
               children: [
                 const SizedBox(height: 24),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     // Signed-in user chip
                     BlocBuilder<AuthBloc, AuthState>(
@@ -86,58 +85,6 @@ class ProgressScreen extends StatelessWidget {
                           );
                         }
                         return const SizedBox.shrink();
-                      },
-                    ),
-                    PopupMenuButton<String>(
-                      padding: EdgeInsets.zero,
-                      icon: const Icon(Icons.more_vert_rounded,
-                          color: AppColors.textPrimary),
-                      color: AppColors.surface,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15)),
-                      onSelected: (value) {
-                        if (value == 'language') showLanguagePicker(context);
-                        if (value == 'save_progress') {
-                          context.read<ProgressBloc>().add(SaveProgressData());
-                        }
-                      },
-                      itemBuilder: (ctx) {
-                        final isSignedIn =
-                            context.read<AuthBloc>().state is AuthAuthenticated;
-                        return [
-                          PopupMenuItem<String>(
-                            value: 'language',
-                            child: Row(children: [
-                              const Icon(Icons.translate_rounded, size: 20),
-                              const SizedBox(width: 12),
-                              Text(l.changeLanguage),
-                            ]),
-                          ),
-                          PopupMenuItem<String>(
-                            value: isSignedIn ? 'save_progress' : null,
-                            enabled: isSignedIn,
-                            child: Row(children: [
-                              Icon(
-                                isSignedIn
-                                    ? Icons.cloud_upload_rounded
-                                    : Icons.check_circle_rounded,
-                                size: 20,
-                                color: isSignedIn ? null : AppColors.secondary,
-                              ),
-                              const SizedBox(width: 12),
-                              Text(
-                                isSignedIn
-                                    ? l.saveProgress
-                                    : 'Already Logged In',
-                                style: TextStyle(
-                                  color: isSignedIn
-                                      ? null
-                                      : AppColors.textSecondary,
-                                ),
-                              ),
-                            ]),
-                          ),
-                        ];
                       },
                     ),
                   ],
