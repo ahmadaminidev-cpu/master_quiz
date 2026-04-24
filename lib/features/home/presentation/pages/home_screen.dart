@@ -202,39 +202,27 @@ class HomeScreen extends StatelessWidget {
                     onTap: completed
                         ? null
                         : () {
-                            final questions = QuizData.dailyQuestions;
-                            Navigator.of(context)
-                                .push(
-                                  MaterialPageRoute(
-                                    builder: (_) => MultiBlocProvider(
-                                      providers: [
-                                        BlocProvider(
-                                          create: (_) => QuizBloc()
-                                            ..add(
-                                              StartQuiz(
-                                                category: 'Daily Challenge',
-                                                questions: questions,
-                                              ),
-                                            ),
-                                        ),
-                                      ],
-                                      child: QuizScreen(
-                                        category: AppLocalizations.of(
-                                          context,
-                                        ).dailyChallengeCategory,
-                                        categoryIcon: Icons.anchor_rounded,
-                                        categoryColor: AppColors.primary,
-                                        isDailyChallenge: true,
+                            final questions = QuizData.dailyChallengeQuestions;
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => BlocProvider(
+                                  create: (_) => QuizBloc()
+                                    ..add(
+                                      StartQuiz(
+                                        category: 'Daily Challenge',
+                                        questions: questions,
+                                        mode: QuizMode.daily,
                                       ),
                                     ),
+                                  child: QuizScreen(
+                                    category: AppLocalizations.of(context).dailyChallenge,
+                                    categoryIcon: Icons.anchor_rounded,
+                                    categoryColor: AppColors.primary,
+                                    isDailyChallenge: true,
                                   ),
-                                )
-                                .then((_) {
-                                  // Refresh daily challenge state after returning
-                                  context.read<DailyChallengeBloc>().add(
-                                    LoadDailyChallenge(),
-                                  );
-                                });
+                                ),
+                              ),
+                            );
                           },
                     child: Container(
                       padding: EdgeInsets.all(isSmallScreen ? 16 : 24),

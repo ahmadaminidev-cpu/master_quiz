@@ -285,6 +285,57 @@ class QuizData {
         .toList();
   }
 
+  // ── Daily Challenge ────────────────────────────────────────────────────────
+
+  static const List<QuizQuestion> dailyChallengePool = [
+    QuizQuestion(question: 'Which fruit is famous for keeping the doctor away?', options: ['Banana', 'Orange', 'Apple', 'Grape'], correctIndex: 2),
+    QuizQuestion(question: 'What is the color of a school bus?', options: ['Red', 'Yellow', 'Blue', 'Green'], correctIndex: 1),
+    QuizQuestion(question: 'How many days are in a week?', options: ['5', '6', '7', '8'], correctIndex: 2),
+    QuizQuestion(question: 'What do you use to stay dry in the rain?', options: ['Hat', 'Sunglasses', 'Umbrella', 'Coat'], correctIndex: 2),
+    QuizQuestion(question: 'Which animal says "Meow"?', options: ['Dog', 'Cat', 'Cow', 'Bird'], correctIndex: 1),
+    QuizQuestion(question: 'What is the color of the grass?', options: ['Blue', 'Red', 'Green', 'Yellow'], correctIndex: 2),
+    QuizQuestion(question: 'How many fingers does a person typically have on one hand?', options: ['4', '5', '6', '10'], correctIndex: 1),
+    QuizQuestion(question: 'Which of these is a primary color?', options: ['Green', 'Purple', 'Red', 'Orange'], correctIndex: 2),
+    QuizQuestion(question: 'What do you use to smell things?', options: ['Eyes', 'Ears', 'Nose', 'Mouth'], correctIndex: 2),
+    QuizQuestion(question: 'Which shape is round like a ball?', options: ['Square', 'Triangle', 'Circle', 'Star'], correctIndex: 2),
+    QuizQuestion(question: 'What is the opposite of "Hot"?', options: ['Warm', 'Cold', 'Wet', 'Dry'], correctIndex: 1),
+    QuizQuestion(question: 'Which animal is known as the "King of the Jungle"?', options: ['Tiger', 'Elephant', 'Lion', 'Giraffe'], correctIndex: 2),
+    QuizQuestion(question: 'How many legs does a dog have?', options: ['2', '4', '6', '8'], correctIndex: 1),
+    QuizQuestion(question: 'What do you wear on your feet to go for a run?', options: ['Gloves', 'Socks', 'Shoes', 'Hats'], correctIndex: 2),
+    QuizQuestion(question: 'Which fruit is yellow and long?', options: ['Apple', 'Banana', 'Cherry', 'Plum'], correctIndex: 1),
+    QuizQuestion(question: 'What is the largest planet in our solar system?', options: ['Earth', 'Mars', 'Jupiter', 'Venus'], correctIndex: 2),
+    QuizQuestion(question: 'Which bird can mimic human speech?', options: ['Eagle', 'Parrot', 'Owl', 'Crow'], correctIndex: 1),
+    QuizQuestion(question: 'How many wheels does a bicycle have?', options: ['1', '2', '3', '4'], correctIndex: 1),
+    QuizQuestion(question: 'What is the color of the sun?', options: ['Blue', 'Green', 'Yellow', 'Purple'], correctIndex: 2),
+    QuizQuestion(question: 'Which ocean is the largest?', options: ['Atlantic', 'Indian', 'Pacific', 'Arctic'], correctIndex: 2),
+    QuizQuestion(question: 'What do you use to write on paper?', options: ['Fork', 'Pencil', 'Spoon', 'Brush'], correctIndex: 1),
+    QuizQuestion(question: 'How many colors are in a rainbow?', options: ['5', '6', '7', '8'], correctIndex: 2),
+    QuizQuestion(question: 'Which season comes after Winter?', options: ['Summer', 'Fall', 'Spring', 'Autumn'], correctIndex: 2),
+    QuizQuestion(question: 'What is the capital of the USA?', options: ['New York', 'Los Angeles', 'Washington D.C.', 'Chicago'], correctIndex: 2),
+    QuizQuestion(question: 'Which animal gives us wool?', options: ['Cow', 'Horse', 'Sheep', 'Pig'], correctIndex: 2),
+    QuizQuestion(question: 'What do you use to cut paper?', options: ['Glue', 'Tape', 'Scissors', 'Eraser'], correctIndex: 2),
+    QuizQuestion(question: 'Which planet is known as the Red Planet?', options: ['Earth', 'Mars', 'Jupiter', 'Saturn'], correctIndex: 1),
+    QuizQuestion(question: 'How many hours are in a day?', options: ['12', '24', '48', '60'], correctIndex: 1),
+    QuizQuestion(question: 'What is the largest land animal?', options: ['Giraffe', 'Elephant', 'Hippo', 'Rhino'], correctIndex: 1),
+    QuizQuestion(question: 'Which of these is a vegetable?', options: ['Apple', 'Banana', 'Carrot', 'Grape'], correctIndex: 2),
+    QuizQuestion(question: 'What do you use to see things?', options: ['Nose', 'Eyes', 'Ears', 'Hands'], correctIndex: 1),
+    QuizQuestion(question: 'Which animal has a very long neck?', options: ['Elephant', 'Giraffe', 'Zebra', 'Horse'], correctIndex: 1),
+    QuizQuestion(question: 'What is the freezing point of water?', options: ['0°C', '50°C', '100°C', '32°C'], correctIndex: 0),
+    QuizQuestion(question: 'How many sides does a triangle have?', options: ['2', '3', '4', '5'], correctIndex: 1),
+    QuizQuestion(question: 'Which country is famous for the Eiffel Tower?', options: ['Italy', 'Germany', 'France', 'Spain'], correctIndex: 2),
+    QuizQuestion(question: 'What is the opposite of "Big"?', options: ['Large', 'Huge', 'Small', 'Tall'], correctIndex: 2),
+    QuizQuestion(question: 'Which animal lives in the water and has fins?', options: ['Dog', 'Cat', 'Fish', 'Bird'], correctIndex: 2),
+    QuizQuestion(question: 'What is the color of an orange?', options: ['Blue', 'Orange', 'Green', 'Red'], correctIndex: 1),
+    QuizQuestion(question: 'How many months are in a year?', options: ['10', '11', '12', '13'], correctIndex: 2),
+    QuizQuestion(question: 'What do you use to tell the time?', options: ['Phone', 'Watch', 'Calendar', 'Map'], correctIndex: 1),
+  ];
+
+  static List<QuizQuestion> get dailyChallengeQuestions {
+    return (List<QuizQuestion>.from(dailyChallengePool)..shuffle(Random()))
+        .take(3) // Each daily challenge is 3 questions
+        .toList();
+  }
+
   // ── Game Mode Questions (200 Pool) ──────────────────────────────────────────
 
   static const List<QuizQuestion> gameModeQuestionsPool = [
