@@ -126,6 +126,7 @@ class TimeAttackFinished extends TimeAttackState {
 class TimeAttackBloc extends Bloc<TimeAttackEvent, TimeAttackState> {
   final List<QuizQuestion> questions;
   Timer? _globalTimer;
+  Timer? _advanceTimer;
 
   TimeAttackBloc({required this.questions}) : super(TimeAttackInitial()) {
     on<StartTimeAttack>(_onStart);
@@ -152,6 +153,7 @@ class TimeAttackBloc extends Bloc<TimeAttackEvent, TimeAttackState> {
 
   void _finish() {
     _globalTimer?.cancel();
+    _advanceTimer?.cancel();
     add(_TimeAttackFinish());
   }
 
@@ -169,6 +171,7 @@ class TimeAttackBloc extends Bloc<TimeAttackEvent, TimeAttackState> {
 
   void _onStart(StartTimeAttack event, Emitter<TimeAttackState> emit) {
     _globalTimer?.cancel();
+    _advanceTimer?.cancel();
     emit(TimeAttackInProgress(
       questions: questions,
       currentIndex: 0,
@@ -200,9 +203,10 @@ class TimeAttackBloc extends Bloc<TimeAttackEvent, TimeAttackState> {
       answerResults: newResults,
     ));
 
-    // Auto-advance after brief feedback via a one-shot timer
-    _globalTimer?.cancel();
-    _globalTimer = Timer(const Duration(milliseconds: 900), () {
+    // Auto-advance after brief feedback via a separate one-shot timer
+    // We do NOT cancel _globalTimer here, so the countdown continues!
+    _advanceTimer?.cancel();
+    _advanceTimer = Timer(const Duration(milliseconds: 900), () {
       add(_TimeAttackAdvance());
     });
   }
@@ -223,41 +227,23 @@ class TimeAttackBloc extends Bloc<TimeAttackEvent, TimeAttackState> {
       return;
     }
 
-    // Resume the global countdown from where it left off
-    final remaining = current.timeRemaining;
     emit(current.copyWith(
       currentIndex: current.currentIndex + 1,
       answered: false,
       clearSelectedAnswer: true,
     ));
-
-    // Restart the per-second tick from the current remaining time
-    _globalTimer?.cancel();
-    _globalTimer = Timer.periodic(const Duration(seconds: 1), (_) {
-      final s = state;
-      if (s is TimeAttackInProgress) {
-        if (s.timeRemaining > 0) {
-          add(TimeAttackTick(s.timeRemaining - 1));
-        } else {
-          _finish();
-        }
-      }
-    });
-    // Emit the preserved remaining time so the bar doesn't jump
-    final s = state;
-    if (s is TimeAttackInProgress) {
-      emit(s.copyWith(timeRemaining: remaining));
-    }
   }
 
   void _onRestart(TimeAttackRestart event, Emitter<TimeAttackState> emit) {
     _globalTimer?.cancel();
+    _advanceTimer?.cancel();
     emit(TimeAttackInitial());
   }
 
   @override
   Future<void> close() {
     _globalTimer?.cancel();
+    _advanceTimer?.cancel();
     return super.close();
   }
 }
