@@ -121,18 +121,20 @@ class PowerUpInProgress extends PowerUpState {
 }
 
 class PowerUpFinished extends PowerUpState {
+  final List<QuizQuestion> questions;
   final int score;
   final int totalQuestions;
   final List<bool?> answerResults;
 
   const PowerUpFinished({
+    required this.questions,
     required this.score,
     required this.totalQuestions,
     required this.answerResults,
   });
 
   @override
-  List<Object?> get props => [score, totalQuestions, answerResults];
+  List<Object?> get props => [questions, score, totalQuestions, answerResults];
 }
 
 // ── Bloc ──────────────────────────────────────────────────────────────────────
@@ -209,6 +211,7 @@ class PowerUpBloc extends Bloc<PowerUpEvent, PowerUpState> {
     if (current.isLastQuestion) {
       _timer?.cancel();
       emit(PowerUpFinished(
+        questions: current.questions,
         score: current.score,
         totalQuestions: current.totalQuestions,
         answerResults: current.answerResults,
@@ -242,6 +245,7 @@ class PowerUpBloc extends Bloc<PowerUpEvent, PowerUpState> {
     // Mark as skipped (null) and move on
     if (current.isLastQuestion) {
       emit(PowerUpFinished(
+        questions: current.questions,
         score: current.score,
         totalQuestions: current.totalQuestions,
         answerResults: current.answerResults,

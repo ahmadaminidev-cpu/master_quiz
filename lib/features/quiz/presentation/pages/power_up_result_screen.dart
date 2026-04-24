@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/auth/auth_bloc.dart';
 import '../../../../core/locale/app_localizations.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../data/quiz_data.dart';
@@ -141,63 +140,31 @@ class PowerUpResultScreen extends StatelessWidget {
 
                     const SizedBox(height: 20),
 
-                    // ── Credits earned / Sign In Prompt ───────────────────────────────────
-                    BlocBuilder<AuthBloc, AuthState>(
-                      builder: (context, authState) {
-                        final isSignedIn = authState is AuthAuthenticated;
-
-                        return Container(
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: AppColors.surface,
-                            borderRadius: BorderRadius.circular(24),
-                            border: Border.all(
-                                color: AppColors.accent.withOpacity(0.15)),
+                    // ── Credits ──────────────────────────────────────────
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: AppColors.surface,
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(
+                            color: AppColors.accent.withOpacity(0.15)),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.stars_rounded,
+                              color: AppColors.accentOrange, size: 28),
+                          const SizedBox(width: 12),
+                          Text(
+                            l.creditsEarnedCount(state.score),
+                            style: const TextStyle(
+                              color: AppColors.textPrimary,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                          child: isSignedIn
-                              ? Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Icon(Icons.stars_rounded,
-                                        color: AppColors.accentOrange,
-                                        size: 28),
-                                    const SizedBox(width: 12),
-                                    Text(
-                                      l.creditsEarnedCount(state.score),
-                                      style: const TextStyle(
-                                        color: AppColors.textPrimary,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              : Column(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        const Icon(Icons.info_outline_rounded,
-                                            color: AppColors.accent, size: 24),
-                                        const SizedBox(width: 12),
-                                        Expanded(
-                                          child: Text(
-                                            'To save your progress and credits, go and sign in',
-                                            textAlign: TextAlign.center,
-                                            style: const TextStyle(
-                                              color: AppColors.textPrimary,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                        );
-                      },
+                        ],
+                      ),
                     ),
 
                     const SizedBox(height: 28),
