@@ -9,12 +9,12 @@ extension QuizModeX on QuizMode {
   int get questionDuration {
     switch (this) {
       case QuizMode.fast:
-        return 5;
+        return 7;
       case QuizMode.standard:
       case QuizMode.daily:
         return 30;
       case QuizMode.timeAttack:
-        return 60; // global, not per-question
+        return 40; // global, not per-question
     }
   }
 

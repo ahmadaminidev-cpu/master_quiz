@@ -5,7 +5,7 @@ import '../../models/quiz_question.dart';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
-const int kTimeAttackDuration = 60;
+const int kTimeAttackDuration = 40;
 
 // ── Events ────────────────────────────────────────────────────────────────────
 

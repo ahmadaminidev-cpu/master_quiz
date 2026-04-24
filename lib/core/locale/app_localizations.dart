@@ -39,9 +39,9 @@ class AppLocalizations {
 
     // ── Game Mode Names ───────────────────────────────────────────────────────
     'fast_mode': {'en': 'Fast Mode', 'fa': 'حالت سریع'},
-    'fast_mode_sub': {'en': '10 Qs • 5s each', 'fa': '۱۰ سوال • ۵ ثانیه'},
+    'fast_mode_sub': {'en': '10 Qs • 7s each', 'fa': '۱۰ سوال • ۷ ثانیه'},
     'time_attack': {'en': 'Time Attack', 'fa': 'حمله زمانی'},
-    'time_attack_sub': {'en': '40 Qs • 60s', 'fa': '۴۰ سوال • ۶۰ ثانیه'},
+    'time_attack_sub': {'en': '40 Qs • 40s', 'fa': '۴۰ سوال • ۴۰ ثانیه'},
     'power_up': {'en': 'Power Up', 'fa': 'پاور آپ'},
     'power_up_sub': {'en': '12 Qs • 10s each', 'fa': '۱۲ سوال • ۱۰ ثانیه'},
     'exam_mode': {'en': 'Exam Mode', 'fa': 'حالت آزمون'},
