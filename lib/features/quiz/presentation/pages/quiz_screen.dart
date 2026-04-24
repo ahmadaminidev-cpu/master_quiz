@@ -34,6 +34,7 @@ class QuizScreen extends StatelessWidget {
           final authState = context.read<AuthBloc>().state;
           if (authState is AuthAuthenticated) {
             context.read<ProgressBloc>().add(AddCredits(state.score));
+            context.read<ProgressBloc>().add(RecordQuizCompletion());
           }
 
           if (isDailyChallenge) {
