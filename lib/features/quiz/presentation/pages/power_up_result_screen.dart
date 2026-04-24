@@ -27,7 +27,7 @@ class PowerUpResultScreen extends StatelessWidget {
         final Color resultColor;
 
         if (percentage >= 80) {
-          title = l.poweredUp;
+        title = l.poweredUp;
           resultColor = const Color(0xFF34D399);
         } else if (percentage >= 60) {
           title = l.goodPower;
