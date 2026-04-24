@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/auth/auth_bloc.dart';
 import '../../../../core/locale/app_localizations.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../daily_challenge/presentation/bloc/daily_challenge_bloc.dart';
@@ -29,8 +30,11 @@ class QuizScreen extends StatelessWidget {
     return BlocConsumer<QuizBloc, QuizState>(
       listener: (context, state) {
         if (state is QuizFinished) {
-          // Add credits to user progress
-          context.read<ProgressBloc>().add(AddCredits(state.score));
+          // Add credits only if signed in
+          final authState = context.read<AuthBloc>().state;
+          if (authState is AuthAuthenticated) {
+            context.read<ProgressBloc>().add(AddCredits(state.score));
+          }
 
           if (isDailyChallenge) {
             context

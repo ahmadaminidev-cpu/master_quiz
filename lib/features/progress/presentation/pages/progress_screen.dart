@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/auth/auth_bloc.dart';
 import '../../../../core/locale/app_localizations.dart';
-import '../../../../core/locale/language_picker.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/app_loading.dart';
 import '../bloc/progress_bloc.dart';
